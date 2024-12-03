@@ -1,4 +1,4 @@
-<ew-language date="2024/12/3" id="en-US" author="e.World Technology Limited">
+<ew-language date="2024/12/4" id="en-US" author="e.World Technology Limited">
   <project>
     <phrase id="bodytitle" value="SPI" />
     <phrase id="footertext" value="&amp;copy;2025 John Samori. All rights reserved." />
@@ -11,11 +11,11 @@
     <menu id="55">
       <phrase id="menutext" value="items" />
     </menu>
-    <menu id="49">
-      <phrase id="menutext" value="Data" />
-    </menu>
     <menu id="57">
       <phrase id="menutext" value="suppliers" />
+    </menu>
+    <menu id="49">
+      <phrase id="menutext" value="Data" />
     </menu>
     <menu id="54">
       <phrase id="menutext" value="documents" />
