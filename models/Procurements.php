@@ -155,14 +155,29 @@ class Procurements extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->item_id->InputTextType = "text";
         $this->item_id->Raw = true;
         $this->item_id->Nullable = false; // NOT NULL field
         $this->item_id->Required = true; // Required field
+        $this->item_id->setSelectMultiple(false); // Select one
+        $this->item_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->item_id->PleaseSelectText = $this->language->phrase("PleaseSelect"); // "PleaseSelect" text
+        global $CurrentLanguage;
+        switch ($CurrentLanguage) {
+            case "en-US":
+                $this->item_id->Lookup = new Lookup($this->item_id, 'items', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->item_id) . "',COALESCE(`name`,''))");
+                break;
+            case "id-ID":
+                $this->item_id->Lookup = new Lookup($this->item_id, 'items', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->item_id) . "',COALESCE(`name`,''))");
+                break;
+            default:
+                $this->item_id->Lookup = new Lookup($this->item_id, 'items', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->item_id) . "',COALESCE(`name`,''))");
+                break;
+        }
         $this->item_id->DefaultErrorMessage = $this->language->phrase("IncorrectInteger");
-        $this->item_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->item_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['item_id'] = &$this->item_id;
 
         // supplier_id
@@ -181,14 +196,29 @@ class Procurements extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->supplier_id->InputTextType = "text";
         $this->supplier_id->Raw = true;
         $this->supplier_id->Nullable = false; // NOT NULL field
         $this->supplier_id->Required = true; // Required field
+        $this->supplier_id->setSelectMultiple(false); // Select one
+        $this->supplier_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->supplier_id->PleaseSelectText = $this->language->phrase("PleaseSelect"); // "PleaseSelect" text
+        global $CurrentLanguage;
+        switch ($CurrentLanguage) {
+            case "en-US":
+                $this->supplier_id->Lookup = new Lookup($this->supplier_id, 'suppliers', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->supplier_id) . "',COALESCE(`name`,''))");
+                break;
+            case "id-ID":
+                $this->supplier_id->Lookup = new Lookup($this->supplier_id, 'suppliers', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->supplier_id) . "',COALESCE(`name`,''))");
+                break;
+            default:
+                $this->supplier_id->Lookup = new Lookup($this->supplier_id, 'suppliers', false, 'id', ["id","name","",""], '', "", [], [], [], [], [], [], false, '', '', "CONCAT(COALESCE(`id`, ''),'" . ValueSeparator(1, $this->supplier_id) . "',COALESCE(`name`,''))");
+                break;
+        }
         $this->supplier_id->DefaultErrorMessage = $this->language->phrase("IncorrectInteger");
-        $this->supplier_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->supplier_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['supplier_id'] = &$this->supplier_id;
 
         // user_id
@@ -1304,12 +1334,46 @@ class Procurements extends DbTable
         $this->id->ViewValue = $this->id->CurrentValue;
 
         // item_id
-        $this->item_id->ViewValue = $this->item_id->CurrentValue;
-        $this->item_id->ViewValue = FormatNumber($this->item_id->ViewValue, $this->item_id->formatPattern());
+        $curVal = strval($this->item_id->CurrentValue);
+        if ($curVal != "") {
+            $this->item_id->ViewValue = $this->item_id->lookupCacheOption($curVal);
+            if ($this->item_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->item_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->item_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                $sqlWrk = $this->item_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->item_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->item_id->ViewValue = $this->item_id->displayValue($arwrk);
+                } else {
+                    $this->item_id->ViewValue = FormatNumber($this->item_id->CurrentValue, $this->item_id->formatPattern());
+                }
+            }
+        } else {
+            $this->item_id->ViewValue = null;
+        }
 
         // supplier_id
-        $this->supplier_id->ViewValue = $this->supplier_id->CurrentValue;
-        $this->supplier_id->ViewValue = FormatNumber($this->supplier_id->ViewValue, $this->supplier_id->formatPattern());
+        $curVal = strval($this->supplier_id->CurrentValue);
+        if ($curVal != "") {
+            $this->supplier_id->ViewValue = $this->supplier_id->lookupCacheOption($curVal);
+            if ($this->supplier_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->supplier_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->supplier_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                $sqlWrk = $this->supplier_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->supplier_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->supplier_id->ViewValue = $this->supplier_id->displayValue($arwrk);
+                } else {
+                    $this->supplier_id->ViewValue = FormatNumber($this->supplier_id->CurrentValue, $this->supplier_id->formatPattern());
+                }
+            }
+        } else {
+            $this->supplier_id->ViewValue = null;
+        }
 
         // user_id
         $this->user_id->ViewValue = $this->user_id->CurrentValue;
@@ -1395,19 +1459,11 @@ class Procurements extends DbTable
 
         // item_id
         $this->item_id->setupEditAttributes();
-        $this->item_id->EditValue = $this->item_id->CurrentValue;
         $this->item_id->PlaceHolder = RemoveHtml($this->item_id->caption());
-        if (strval($this->item_id->EditValue) != "" && is_numeric($this->item_id->EditValue)) {
-            $this->item_id->EditValue = FormatNumber($this->item_id->EditValue, null);
-        }
 
         // supplier_id
         $this->supplier_id->setupEditAttributes();
-        $this->supplier_id->EditValue = $this->supplier_id->CurrentValue;
         $this->supplier_id->PlaceHolder = RemoveHtml($this->supplier_id->caption());
-        if (strval($this->supplier_id->EditValue) != "" && is_numeric($this->supplier_id->EditValue)) {
-            $this->supplier_id->EditValue = FormatNumber($this->supplier_id->EditValue, null);
-        }
 
         // user_id
         $this->user_id->setupEditAttributes();

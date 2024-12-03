@@ -516,6 +516,8 @@ class ProcurementsEdit extends Procurements
 		// End of Compare Root URL by Masino Sinaga, September 10, 2023
 
         // Set up lookup cache
+        $this->setupLookupOptions($this->item_id);
+        $this->setupLookupOptions($this->supplier_id);
         $this->setupLookupOptions($this->status);
 
         // Check modal
@@ -768,7 +770,7 @@ class ProcurementsEdit extends Procurements
             if (IsApi() && $val === null) {
                 $this->item_id->Visible = false; // Disable update for API request
             } else {
-                $this->item_id->setFormValue($val, true, $validate);
+                $this->item_id->setFormValue($val);
             }
         }
 
@@ -778,7 +780,7 @@ class ProcurementsEdit extends Procurements
             if (IsApi() && $val === null) {
                 $this->supplier_id->Visible = false; // Disable update for API request
             } else {
-                $this->supplier_id->setFormValue($val, true, $validate);
+                $this->supplier_id->setFormValue($val);
             }
         }
 
@@ -1046,12 +1048,46 @@ class ProcurementsEdit extends Procurements
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // item_id
-            $this->item_id->ViewValue = $this->item_id->CurrentValue;
-            $this->item_id->ViewValue = FormatNumber($this->item_id->ViewValue, $this->item_id->formatPattern());
+            $curVal = strval($this->item_id->CurrentValue);
+            if ($curVal != "") {
+                $this->item_id->ViewValue = $this->item_id->lookupCacheOption($curVal);
+                if ($this->item_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->item_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->item_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                    $sqlWrk = $this->item_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->item_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->item_id->ViewValue = $this->item_id->displayValue($arwrk);
+                    } else {
+                        $this->item_id->ViewValue = FormatNumber($this->item_id->CurrentValue, $this->item_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->item_id->ViewValue = null;
+            }
 
             // supplier_id
-            $this->supplier_id->ViewValue = $this->supplier_id->CurrentValue;
-            $this->supplier_id->ViewValue = FormatNumber($this->supplier_id->ViewValue, $this->supplier_id->formatPattern());
+            $curVal = strval($this->supplier_id->CurrentValue);
+            if ($curVal != "") {
+                $this->supplier_id->ViewValue = $this->supplier_id->lookupCacheOption($curVal);
+                if ($this->supplier_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->supplier_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->supplier_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                    $sqlWrk = $this->supplier_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->supplier_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->supplier_id->ViewValue = $this->supplier_id->displayValue($arwrk);
+                    } else {
+                        $this->supplier_id->ViewValue = FormatNumber($this->supplier_id->CurrentValue, $this->supplier_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->supplier_id->ViewValue = null;
+            }
 
             // user_id
             $this->user_id->ViewValue = $this->user_id->CurrentValue;
@@ -1113,19 +1149,53 @@ class ProcurementsEdit extends Procurements
 
             // item_id
             $this->item_id->setupEditAttributes();
-            $this->item_id->EditValue = $this->item_id->CurrentValue;
-            $this->item_id->PlaceHolder = RemoveHtml($this->item_id->caption());
-            if (strval($this->item_id->EditValue) != "" && is_numeric($this->item_id->EditValue)) {
-                $this->item_id->EditValue = FormatNumber($this->item_id->EditValue, null);
+            $curVal = trim(strval($this->item_id->CurrentValue));
+            if ($curVal != "") {
+                $this->item_id->ViewValue = $this->item_id->lookupCacheOption($curVal);
+            } else {
+                $this->item_id->ViewValue = $this->item_id->Lookup !== null && is_array($this->item_id->lookupOptions()) && count($this->item_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->item_id->ViewValue !== null) { // Load from cache
+                $this->item_id->EditValue = array_values($this->item_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->item_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->item_id->CurrentValue, $this->item_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                }
+                $sqlWrk = $this->item_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->item_id->EditValue = $arwrk;
+            }
+            $this->item_id->PlaceHolder = RemoveHtml($this->item_id->caption());
 
             // supplier_id
             $this->supplier_id->setupEditAttributes();
-            $this->supplier_id->EditValue = $this->supplier_id->CurrentValue;
-            $this->supplier_id->PlaceHolder = RemoveHtml($this->supplier_id->caption());
-            if (strval($this->supplier_id->EditValue) != "" && is_numeric($this->supplier_id->EditValue)) {
-                $this->supplier_id->EditValue = FormatNumber($this->supplier_id->EditValue, null);
+            $curVal = trim(strval($this->supplier_id->CurrentValue));
+            if ($curVal != "") {
+                $this->supplier_id->ViewValue = $this->supplier_id->lookupCacheOption($curVal);
+            } else {
+                $this->supplier_id->ViewValue = $this->supplier_id->Lookup !== null && is_array($this->supplier_id->lookupOptions()) && count($this->supplier_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->supplier_id->ViewValue !== null) { // Load from cache
+                $this->supplier_id->EditValue = array_values($this->supplier_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->supplier_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->supplier_id->CurrentValue, $this->supplier_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                }
+                $sqlWrk = $this->supplier_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->supplier_id->EditValue = $arwrk;
+            }
+            $this->supplier_id->PlaceHolder = RemoveHtml($this->supplier_id->caption());
 
             // user_id
             $this->user_id->setupEditAttributes();
@@ -1219,16 +1289,10 @@ class ProcurementsEdit extends Procurements
                     $this->item_id->addErrorMessage(str_replace("%s", $this->item_id->caption(), $this->item_id->RequiredErrorMessage));
                 }
             }
-            if (!CheckInteger($this->item_id->FormValue)) {
-                $this->item_id->addErrorMessage($this->item_id->getErrorMessage(false));
-            }
             if ($this->supplier_id->Visible && $this->supplier_id->Required) {
                 if (!$this->supplier_id->IsDetailKey && IsEmpty($this->supplier_id->FormValue)) {
                     $this->supplier_id->addErrorMessage(str_replace("%s", $this->supplier_id->caption(), $this->supplier_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->supplier_id->FormValue)) {
-                $this->supplier_id->addErrorMessage($this->supplier_id->getErrorMessage(false));
             }
             if ($this->user_id->Visible && $this->user_id->Required) {
                 if (!$this->user_id->IsDetailKey && IsEmpty($this->user_id->FormValue)) {
@@ -1443,6 +1507,10 @@ class ProcurementsEdit extends Procurements
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_item_id":
+                    break;
+                case "x_supplier_id":
+                    break;
                 case "x_status":
                     break;
                 default:

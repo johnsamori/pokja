@@ -151,14 +151,29 @@ class Documents extends DbTable
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'SELECT' // Edit Tag
         );
         $this->procurement_id->InputTextType = "text";
         $this->procurement_id->Raw = true;
         $this->procurement_id->Nullable = false; // NOT NULL field
         $this->procurement_id->Required = true; // Required field
+        $this->procurement_id->setSelectMultiple(false); // Select one
+        $this->procurement_id->UsePleaseSelect = true; // Use PleaseSelect by default
+        $this->procurement_id->PleaseSelectText = $this->language->phrase("PleaseSelect"); // "PleaseSelect" text
+        global $CurrentLanguage;
+        switch ($CurrentLanguage) {
+            case "en-US":
+                $this->procurement_id->Lookup = new Lookup($this->procurement_id, 'procurements', false, 'id', ["id","","",""], '', "", [], [], [], [], [], [], false, '', '', "`id`");
+                break;
+            case "id-ID":
+                $this->procurement_id->Lookup = new Lookup($this->procurement_id, 'procurements', false, 'id', ["id","","",""], '', "", [], [], [], [], [], [], false, '', '', "`id`");
+                break;
+            default:
+                $this->procurement_id->Lookup = new Lookup($this->procurement_id, 'procurements', false, 'id', ["id","","",""], '', "", [], [], [], [], [], [], false, '', '', "`id`");
+                break;
+        }
         $this->procurement_id->DefaultErrorMessage = $this->language->phrase("IncorrectInteger");
-        $this->procurement_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
+        $this->procurement_id->SearchOperators = ["=", "<>", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['procurement_id'] = &$this->procurement_id;
 
         // file_name
@@ -1165,8 +1180,25 @@ class Documents extends DbTable
         $this->id->ViewValue = $this->id->CurrentValue;
 
         // procurement_id
-        $this->procurement_id->ViewValue = $this->procurement_id->CurrentValue;
-        $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->ViewValue, $this->procurement_id->formatPattern());
+        $curVal = strval($this->procurement_id->CurrentValue);
+        if ($curVal != "") {
+            $this->procurement_id->ViewValue = $this->procurement_id->lookupCacheOption($curVal);
+            if ($this->procurement_id->ViewValue === null) { // Lookup from database
+                $filterWrk = SearchFilter($this->procurement_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->procurement_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                $sqlWrk = $this->procurement_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                if ($ari > 0) { // Lookup values found
+                    $arwrk = $this->procurement_id->Lookup->renderViewRow($rswrk[0]);
+                    $this->procurement_id->ViewValue = $this->procurement_id->displayValue($arwrk);
+                } else {
+                    $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->CurrentValue, $this->procurement_id->formatPattern());
+                }
+            }
+        } else {
+            $this->procurement_id->ViewValue = null;
+        }
 
         // file_name
         $this->file_name->ViewValue = $this->file_name->CurrentValue;
@@ -1219,11 +1251,7 @@ class Documents extends DbTable
 
         // procurement_id
         $this->procurement_id->setupEditAttributes();
-        $this->procurement_id->EditValue = $this->procurement_id->CurrentValue;
         $this->procurement_id->PlaceHolder = RemoveHtml($this->procurement_id->caption());
-        if (strval($this->procurement_id->EditValue) != "" && is_numeric($this->procurement_id->EditValue)) {
-            $this->procurement_id->EditValue = FormatNumber($this->procurement_id->EditValue, null);
-        }
 
         // file_name
         $this->file_name->setupEditAttributes();

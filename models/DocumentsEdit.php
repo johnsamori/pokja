@@ -511,6 +511,9 @@ class DocumentsEdit extends Documents
 		}
 		// End of Compare Root URL by Masino Sinaga, September 10, 2023
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->procurement_id);
+
         // Check modal
         if ($this->IsModal) {
             $SkipHeaderFooter = true;
@@ -761,7 +764,7 @@ class DocumentsEdit extends Documents
             if (IsApi() && $val === null) {
                 $this->procurement_id->Visible = false; // Disable update for API request
             } else {
-                $this->procurement_id->setFormValue($val, true, $validate);
+                $this->procurement_id->setFormValue($val);
             }
         }
 
@@ -971,8 +974,25 @@ class DocumentsEdit extends Documents
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // procurement_id
-            $this->procurement_id->ViewValue = $this->procurement_id->CurrentValue;
-            $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->ViewValue, $this->procurement_id->formatPattern());
+            $curVal = strval($this->procurement_id->CurrentValue);
+            if ($curVal != "") {
+                $this->procurement_id->ViewValue = $this->procurement_id->lookupCacheOption($curVal);
+                if ($this->procurement_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->procurement_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->procurement_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                    $sqlWrk = $this->procurement_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->procurement_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->procurement_id->ViewValue = $this->procurement_id->displayValue($arwrk);
+                    } else {
+                        $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->CurrentValue, $this->procurement_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->procurement_id->ViewValue = null;
+            }
 
             // file_name
             $this->file_name->ViewValue = $this->file_name->CurrentValue;
@@ -1005,11 +1025,28 @@ class DocumentsEdit extends Documents
 
             // procurement_id
             $this->procurement_id->setupEditAttributes();
-            $this->procurement_id->EditValue = $this->procurement_id->CurrentValue;
-            $this->procurement_id->PlaceHolder = RemoveHtml($this->procurement_id->caption());
-            if (strval($this->procurement_id->EditValue) != "" && is_numeric($this->procurement_id->EditValue)) {
-                $this->procurement_id->EditValue = FormatNumber($this->procurement_id->EditValue, null);
+            $curVal = trim(strval($this->procurement_id->CurrentValue));
+            if ($curVal != "") {
+                $this->procurement_id->ViewValue = $this->procurement_id->lookupCacheOption($curVal);
+            } else {
+                $this->procurement_id->ViewValue = $this->procurement_id->Lookup !== null && is_array($this->procurement_id->lookupOptions()) && count($this->procurement_id->lookupOptions()) > 0 ? $curVal : null;
             }
+            if ($this->procurement_id->ViewValue !== null) { // Load from cache
+                $this->procurement_id->EditValue = array_values($this->procurement_id->lookupOptions());
+            } else { // Lookup from database
+                if ($curVal == "") {
+                    $filterWrk = "0=1";
+                } else {
+                    $filterWrk = SearchFilter($this->procurement_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $this->procurement_id->CurrentValue, $this->procurement_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                }
+                $sqlWrk = $this->procurement_id->Lookup->getSql(true, $filterWrk, '', $this, false, true);
+                $conn = Conn();
+                $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                $ari = count($rswrk);
+                $arwrk = $rswrk;
+                $this->procurement_id->EditValue = $arwrk;
+            }
+            $this->procurement_id->PlaceHolder = RemoveHtml($this->procurement_id->caption());
 
             // file_name
             $this->file_name->setupEditAttributes();
@@ -1076,9 +1113,6 @@ class DocumentsEdit extends Documents
                 if (!$this->procurement_id->IsDetailKey && IsEmpty($this->procurement_id->FormValue)) {
                     $this->procurement_id->addErrorMessage(str_replace("%s", $this->procurement_id->caption(), $this->procurement_id->RequiredErrorMessage));
                 }
-            }
-            if (!CheckInteger($this->procurement_id->FormValue)) {
-                $this->procurement_id->addErrorMessage($this->procurement_id->getErrorMessage(false));
             }
             if ($this->file_name->Visible && $this->file_name->Required) {
                 if (!$this->file_name->IsDetailKey && IsEmpty($this->file_name->FormValue)) {
@@ -1242,6 +1276,8 @@ class DocumentsEdit extends Documents
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_procurement_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;

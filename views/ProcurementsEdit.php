@@ -48,8 +48,8 @@ loadjs.ready(["wrapper", "head"], function () {
         // Add fields
         .setFields([
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
-            ["item_id", [fields.item_id.visible && fields.item_id.required ? ew.Validators.required(fields.item_id.caption) : null, ew.Validators.integer], fields.item_id.isInvalid],
-            ["supplier_id", [fields.supplier_id.visible && fields.supplier_id.required ? ew.Validators.required(fields.supplier_id.caption) : null, ew.Validators.integer], fields.supplier_id.isInvalid],
+            ["item_id", [fields.item_id.visible && fields.item_id.required ? ew.Validators.required(fields.item_id.caption) : null], fields.item_id.isInvalid],
+            ["supplier_id", [fields.supplier_id.visible && fields.supplier_id.required ? ew.Validators.required(fields.supplier_id.caption) : null], fields.supplier_id.isInvalid],
             ["user_id", [fields.user_id.visible && fields.user_id.required ? ew.Validators.required(fields.user_id.caption) : null, ew.Validators.integer], fields.user_id.isInvalid],
             ["status", [fields.status.visible && fields.status.required ? ew.Validators.required(fields.status.caption) : null], fields.status.isInvalid],
             ["total_price", [fields.total_price.visible && fields.total_price.required ? ew.Validators.required(fields.total_price.caption) : null, ew.Validators.float], fields.total_price.isInvalid],
@@ -71,6 +71,8 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "item_id": <?= $Page->item_id->toClientList($Page) ?>,
+            "supplier_id": <?= $Page->supplier_id->toClientList($Page) ?>,
             "status": <?= $Page->status->toClientList($Page) ?>,
         })
         .build();
@@ -113,23 +115,43 @@ loadjs.ready("head", function () {
         <label id="elh_procurements_item_id" for="x_item_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->item_id->caption() ?><?= $Page->item_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->item_id->cellAttributes() ?>>
 <span id="el_procurements_item_id">
-<input type="<?= $Page->item_id->getInputTextType() ?>" name="x_item_id" id="x_item_id" data-table="procurements" data-field="x_item_id" value="<?= $Page->item_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->item_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->item_id->formatPattern()) ?>"<?= $Page->item_id->editAttributes() ?> aria-describedby="x_item_id_help">
-<?= $Page->item_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->item_id->getErrorMessage() ?></div>
+    <select
+        id="x_item_id"
+        name="x_item_id"
+        class="form-select ew-select<?= $Page->item_id->isInvalidClass() ?>"
+        <?php if (!$Page->item_id->IsNativeSelect) { ?>
+        data-select2-id="fprocurementsedit_x_item_id"
+        <?php } ?>
+        data-table="procurements"
+        data-field="x_item_id"
+        data-value-separator="<?= $Page->item_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->item_id->getPlaceHolder()) ?>"
+        <?= $Page->item_id->editAttributes() ?>>
+        <?= $Page->item_id->selectOptionListHtml("x_item_id") ?>
+    </select>
+    <?= $Page->item_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->item_id->getErrorMessage() ?></div>
+<?= $Page->item_id->Lookup->getParamTag($Page, "p_x_item_id") ?>
+<?php if (!$Page->item_id->IsNativeSelect) { ?>
 <script<?= Nonce() ?>>
-loadjs.ready(['fprocurementsedit', 'jqueryinputmask'], function() {
-	options = {
-		'alias': 'numeric',
-		'autoUnmask': true,
-		'jitMasking': false,
-		'groupSeparator': '<?php echo $GROUPING_SEPARATOR ?>',
-		'digits': 0,
-		'radixPoint': '<?php echo $DECIMAL_SEPARATOR ?>',
-		'removeMaskOnSubmit': true
-	};
-	ew.createjQueryInputMask("fprocurementsedit", "x_item_id", jQuery.extend(true, "", options));
+loadjs.ready("fprocurementsedit", function() {
+    var options = { name: "x_item_id", selectId: "fprocurementsedit_x_item_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fprocurementsedit.lists.item_id?.lookupOptions.length) {
+        options.data = { id: "x_item_id", form: "fprocurementsedit" };
+    } else {
+        options.ajax = { id: "x_item_id", form: "fprocurementsedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.procurements.fields.item_id.selectOptions);
+    ew.createSelect(options);
 });
 </script>
+<?php } ?>
 </span>
 </div></div>
     </div>
@@ -139,23 +161,43 @@ loadjs.ready(['fprocurementsedit', 'jqueryinputmask'], function() {
         <label id="elh_procurements_supplier_id" for="x_supplier_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->supplier_id->caption() ?><?= $Page->supplier_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->supplier_id->cellAttributes() ?>>
 <span id="el_procurements_supplier_id">
-<input type="<?= $Page->supplier_id->getInputTextType() ?>" name="x_supplier_id" id="x_supplier_id" data-table="procurements" data-field="x_supplier_id" value="<?= $Page->supplier_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->supplier_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->supplier_id->formatPattern()) ?>"<?= $Page->supplier_id->editAttributes() ?> aria-describedby="x_supplier_id_help">
-<?= $Page->supplier_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->supplier_id->getErrorMessage() ?></div>
+    <select
+        id="x_supplier_id"
+        name="x_supplier_id"
+        class="form-select ew-select<?= $Page->supplier_id->isInvalidClass() ?>"
+        <?php if (!$Page->supplier_id->IsNativeSelect) { ?>
+        data-select2-id="fprocurementsedit_x_supplier_id"
+        <?php } ?>
+        data-table="procurements"
+        data-field="x_supplier_id"
+        data-value-separator="<?= $Page->supplier_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->supplier_id->getPlaceHolder()) ?>"
+        <?= $Page->supplier_id->editAttributes() ?>>
+        <?= $Page->supplier_id->selectOptionListHtml("x_supplier_id") ?>
+    </select>
+    <?= $Page->supplier_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->supplier_id->getErrorMessage() ?></div>
+<?= $Page->supplier_id->Lookup->getParamTag($Page, "p_x_supplier_id") ?>
+<?php if (!$Page->supplier_id->IsNativeSelect) { ?>
 <script<?= Nonce() ?>>
-loadjs.ready(['fprocurementsedit', 'jqueryinputmask'], function() {
-	options = {
-		'alias': 'numeric',
-		'autoUnmask': true,
-		'jitMasking': false,
-		'groupSeparator': '<?php echo $GROUPING_SEPARATOR ?>',
-		'digits': 0,
-		'radixPoint': '<?php echo $DECIMAL_SEPARATOR ?>',
-		'removeMaskOnSubmit': true
-	};
-	ew.createjQueryInputMask("fprocurementsedit", "x_supplier_id", jQuery.extend(true, "", options));
+loadjs.ready("fprocurementsedit", function() {
+    var options = { name: "x_supplier_id", selectId: "fprocurementsedit_x_supplier_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fprocurementsedit.lists.supplier_id?.lookupOptions.length) {
+        options.data = { id: "x_supplier_id", form: "fprocurementsedit" };
+    } else {
+        options.ajax = { id: "x_supplier_id", form: "fprocurementsedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.procurements.fields.supplier_id.selectOptions);
+    ew.createSelect(options);
 });
 </script>
+<?php } ?>
 </span>
 </div></div>
     </div>

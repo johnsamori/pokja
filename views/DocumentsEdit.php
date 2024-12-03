@@ -48,7 +48,7 @@ loadjs.ready(["wrapper", "head"], function () {
         // Add fields
         .setFields([
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
-            ["procurement_id", [fields.procurement_id.visible && fields.procurement_id.required ? ew.Validators.required(fields.procurement_id.caption) : null, ew.Validators.integer], fields.procurement_id.isInvalid],
+            ["procurement_id", [fields.procurement_id.visible && fields.procurement_id.required ? ew.Validators.required(fields.procurement_id.caption) : null], fields.procurement_id.isInvalid],
             ["file_name", [fields.file_name.visible && fields.file_name.required ? ew.Validators.required(fields.file_name.caption) : null], fields.file_name.isInvalid],
             ["file_path", [fields.file_path.visible && fields.file_path.required ? ew.Validators.required(fields.file_path.caption) : null], fields.file_path.isInvalid],
             ["uploaded_at", [fields.uploaded_at.visible && fields.uploaded_at.required ? ew.Validators.required(fields.uploaded_at.caption) : null, ew.Validators.datetime(fields.uploaded_at.clientFormatPattern)], fields.uploaded_at.isInvalid]
@@ -67,6 +67,7 @@ loadjs.ready(["wrapper", "head"], function () {
 
         // Dynamic selection lists
         .setLists({
+            "procurement_id": <?= $Page->procurement_id->toClientList($Page) ?>,
         })
         .build();
     window[form.id] = form;
@@ -108,23 +109,43 @@ loadjs.ready("head", function () {
         <label id="elh_documents_procurement_id" for="x_procurement_id" class="<?= $Page->LeftColumnClass ?>"><?= $Page->procurement_id->caption() ?><?= $Page->procurement_id->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->procurement_id->cellAttributes() ?>>
 <span id="el_documents_procurement_id">
-<input type="<?= $Page->procurement_id->getInputTextType() ?>" name="x_procurement_id" id="x_procurement_id" data-table="documents" data-field="x_procurement_id" value="<?= $Page->procurement_id->EditValue ?>" size="30" placeholder="<?= HtmlEncode($Page->procurement_id->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->procurement_id->formatPattern()) ?>"<?= $Page->procurement_id->editAttributes() ?> aria-describedby="x_procurement_id_help">
-<?= $Page->procurement_id->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->procurement_id->getErrorMessage() ?></div>
+    <select
+        id="x_procurement_id"
+        name="x_procurement_id"
+        class="form-select ew-select<?= $Page->procurement_id->isInvalidClass() ?>"
+        <?php if (!$Page->procurement_id->IsNativeSelect) { ?>
+        data-select2-id="fdocumentsedit_x_procurement_id"
+        <?php } ?>
+        data-table="documents"
+        data-field="x_procurement_id"
+        data-value-separator="<?= $Page->procurement_id->displayValueSeparatorAttribute() ?>"
+        data-placeholder="<?= HtmlEncode($Page->procurement_id->getPlaceHolder()) ?>"
+        <?= $Page->procurement_id->editAttributes() ?>>
+        <?= $Page->procurement_id->selectOptionListHtml("x_procurement_id") ?>
+    </select>
+    <?= $Page->procurement_id->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->procurement_id->getErrorMessage() ?></div>
+<?= $Page->procurement_id->Lookup->getParamTag($Page, "p_x_procurement_id") ?>
+<?php if (!$Page->procurement_id->IsNativeSelect) { ?>
 <script<?= Nonce() ?>>
-loadjs.ready(['fdocumentsedit', 'jqueryinputmask'], function() {
-	options = {
-		'alias': 'numeric',
-		'autoUnmask': true,
-		'jitMasking': false,
-		'groupSeparator': '<?php echo $GROUPING_SEPARATOR ?>',
-		'digits': 0,
-		'radixPoint': '<?php echo $DECIMAL_SEPARATOR ?>',
-		'removeMaskOnSubmit': true
-	};
-	ew.createjQueryInputMask("fdocumentsedit", "x_procurement_id", jQuery.extend(true, "", options));
+loadjs.ready("fdocumentsedit", function() {
+    var options = { name: "x_procurement_id", selectId: "fdocumentsedit_x_procurement_id" },
+        el = document.querySelector("select[data-select2-id='" + options.selectId + "']");
+    if (!el)
+        return;
+    options.closeOnSelect = !options.multiple;
+    options.dropdownParent = el.closest("#ew-modal-dialog, #ew-add-opt-dialog");
+    if (fdocumentsedit.lists.procurement_id?.lookupOptions.length) {
+        options.data = { id: "x_procurement_id", form: "fdocumentsedit" };
+    } else {
+        options.ajax = { id: "x_procurement_id", form: "fdocumentsedit", limit: ew.LOOKUP_PAGE_SIZE };
+    }
+    options.minimumResultsForSearch = Infinity;
+    options = Object.assign({}, ew.selectOptions, options, ew.vars.tables.documents.fields.procurement_id.selectOptions);
+    ew.createSelect(options);
 });
 </script>
+<?php } ?>
 </span>
 </div></div>
     </div>

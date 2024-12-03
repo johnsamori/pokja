@@ -693,6 +693,9 @@ class DocumentsList extends Documents
         // Setup other options
         $this->setupOtherOptions();
 
+        // Set up lookup cache
+        $this->setupLookupOptions($this->procurement_id);
+
         // Update form name to avoid conflict
         if ($this->IsModal) {
             $this->FormName = "fdocumentsgrid";
@@ -2011,8 +2014,25 @@ class DocumentsList extends Documents
             $this->id->ViewValue = $this->id->CurrentValue;
 
             // procurement_id
-            $this->procurement_id->ViewValue = $this->procurement_id->CurrentValue;
-            $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->ViewValue, $this->procurement_id->formatPattern());
+            $curVal = strval($this->procurement_id->CurrentValue);
+            if ($curVal != "") {
+                $this->procurement_id->ViewValue = $this->procurement_id->lookupCacheOption($curVal);
+                if ($this->procurement_id->ViewValue === null) { // Lookup from database
+                    $filterWrk = SearchFilter($this->procurement_id->Lookup->getTable()->Fields["id"]->searchExpression(), "=", $curVal, $this->procurement_id->Lookup->getTable()->Fields["id"]->searchDataType(), "DB");
+                    $sqlWrk = $this->procurement_id->Lookup->getSql(false, $filterWrk, '', $this, true, true);
+                    $conn = Conn();
+                    $rswrk = $conn->executeCacheQuery($sqlWrk, [], [], $this->cacheProfile)->fetchAllAssociative();
+                    $ari = count($rswrk);
+                    if ($ari > 0) { // Lookup values found
+                        $arwrk = $this->procurement_id->Lookup->renderViewRow($rswrk[0]);
+                        $this->procurement_id->ViewValue = $this->procurement_id->displayValue($arwrk);
+                    } else {
+                        $this->procurement_id->ViewValue = FormatNumber($this->procurement_id->CurrentValue, $this->procurement_id->formatPattern());
+                    }
+                }
+            } else {
+                $this->procurement_id->ViewValue = null;
+            }
 
             // file_name
             $this->file_name->ViewValue = $this->file_name->CurrentValue;
@@ -2336,6 +2356,8 @@ class DocumentsList extends Documents
 
             // Set up lookup SQL and connection
             switch ($fld->FieldVar) {
+                case "x_procurement_id":
+                    break;
                 default:
                     $lookupFilter = "";
                     break;
