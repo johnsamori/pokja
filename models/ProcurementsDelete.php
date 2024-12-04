@@ -136,12 +136,12 @@ class ProcurementsDelete extends Procurements
         $this->id->setVisibility();
         $this->item_id->setVisibility();
         $this->supplier_id->setVisibility();
-        $this->user_id->setVisibility();
+        $this->user_id->Visible = false;
         $this->status->setVisibility();
         $this->total_price->setVisibility();
         $this->procurement_date->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
+        $this->ip->Visible = false;
+        $this->_username->Visible = false;
     }
 
     // Constructor
@@ -600,8 +600,8 @@ class ProcurementsDelete extends Procurements
         $this->status->setDbValue($row['status']);
         $this->total_price->setDbValue($row['total_price']);
         $this->procurement_date->setDbValue($row['procurement_date']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->ip->setDbValue($row['ip']);
+        $this->_username->setDbValue($row['username']);
     }
 
     // Return a row with default values
@@ -615,8 +615,8 @@ class ProcurementsDelete extends Procurements
         $row['status'] = $this->status->DefaultValue;
         $row['total_price'] = $this->total_price->DefaultValue;
         $row['procurement_date'] = $this->procurement_date->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['ip'] = $this->ip->DefaultValue;
+        $row['username'] = $this->_username->DefaultValue;
         return $row;
     }
 
@@ -646,9 +646,9 @@ class ProcurementsDelete extends Procurements
 
         // procurement_date
 
-        // created_at
+        // ip
 
-        // updated_at
+        // username
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -716,13 +716,11 @@ class ProcurementsDelete extends Procurements
             $this->procurement_date->ViewValue = $this->procurement_date->CurrentValue;
             $this->procurement_date->ViewValue = FormatDateTime($this->procurement_date->ViewValue, $this->procurement_date->formatPattern());
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
 
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+            // username
+            $this->_username->ViewValue = $this->_username->CurrentValue;
 
             // id
             $this->id->HrefValue = "";
@@ -736,10 +734,6 @@ class ProcurementsDelete extends Procurements
             $this->supplier_id->HrefValue = "";
             $this->supplier_id->TooltipValue = "";
 
-            // user_id
-            $this->user_id->HrefValue = "";
-            $this->user_id->TooltipValue = "";
-
             // status
             $this->status->HrefValue = "";
             $this->status->TooltipValue = "";
@@ -751,14 +745,6 @@ class ProcurementsDelete extends Procurements
             // procurement_date
             $this->procurement_date->HrefValue = "";
             $this->procurement_date->TooltipValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-            $this->created_at->TooltipValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
-            $this->updated_at->TooltipValue = "";
         }
 
         // Call Row Rendered event

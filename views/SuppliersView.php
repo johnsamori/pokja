@@ -127,28 +127,6 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-    <tr id="r_created_at"<?= $Page->created_at->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_suppliers_created_at"><?= $Page->created_at->caption() ?></span></td>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el_suppliers_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-    <tr id="r_updated_at"<?= $Page->updated_at->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_suppliers_updated_at"><?= $Page->updated_at->caption() ?></span></td>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el_suppliers_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
-</span>
-</td>
-    </tr>
-<?php } ?>
 </table>
 </form>
 <?php // Begin of Card view by Masino Sinaga, September 10, 2023 ?>

@@ -55,11 +55,11 @@ class Procurement extends AbstractEntity
     #[Column(name: "procurement_date", type: "date", nullable: true)]
     private ?DateTime $ProcurementDate;
 
-    #[Column(name: "created_at", type: "datetime")]
-    private DateTime $CreatedAt;
+    #[Column(name: "ip", type: "string", nullable: true)]
+    private ?string $Ip;
 
-    #[Column(name: "updated_at", type: "datetime")]
-    private DateTime $UpdatedAt;
+    #[Column(name: "username", type: "string", nullable: true)]
+    private ?string $Username;
 
     public function __construct()
     {
@@ -146,25 +146,25 @@ class Procurement extends AbstractEntity
         return $this;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getIp(): ?string
     {
-        return $this->CreatedAt;
+        return HtmlDecode($this->Ip);
     }
 
-    public function setCreatedAt(DateTime $value): static
+    public function setIp(?string $value): static
     {
-        $this->CreatedAt = $value;
+        $this->Ip = RemoveXss($value);
         return $this;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUsername(): ?string
     {
-        return $this->UpdatedAt;
+        return HtmlDecode($this->Username);
     }
 
-    public function setUpdatedAt(DateTime $value): static
+    public function setUsername(?string $value): static
     {
-        $this->UpdatedAt = $value;
+        $this->Username = RemoveXss($value);
         return $this;
     }
 }

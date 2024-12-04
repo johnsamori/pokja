@@ -214,12 +214,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->_email->Visible) { // email ?>
         <th data-name="_email" class="<?= $Page->_email->headerCellClass() ?>"><div id="elh_suppliers__email" class="suppliers__email"><?= $Page->renderFieldHeader($Page->_email) ?></div></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_suppliers_created_at" class="suppliers_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_suppliers_updated_at" class="suppliers_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
-<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -288,22 +282,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_created_at" class="el_suppliers_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_updated_at" class="el_suppliers_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
 <?php
 // Render list options (body, right)
 $Page->ListOptions->render("body", "right", $Page->RowCount);
@@ -355,12 +333,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->_email->Visible) { // email ?>
         <th data-name="_email" class="<?= $Page->_email->headerCellClass() ?>"><div id="elh_suppliers__email" class="suppliers__email"><?= $Page->renderFieldHeader($Page->_email) ?></div></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_suppliers_created_at" class="suppliers_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_suppliers_updated_at" class="suppliers_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
-<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -410,22 +382,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers__email" class="el_suppliers__email">
 <span<?= $Page->_email->viewAttributes() ?>>
 <?= $Page->_email->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_created_at" class="el_suppliers_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_updated_at" class="el_suppliers_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -513,12 +469,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->_email->Visible) { // email ?>
         <th data-name="_email" class="<?= $Page->_email->headerCellClass() ?>"><div id="elh_suppliers__email" class="suppliers__email"><?= $Page->renderFieldHeader($Page->_email) ?></div></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_suppliers_created_at" class="suppliers_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_suppliers_updated_at" class="suppliers_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
-<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -587,22 +537,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_created_at" class="el_suppliers_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_updated_at" class="el_suppliers_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
 <?php
 // Render list options (body, right)
 $Page->ListOptions->render("body", "right", $Page->RowCount);
@@ -654,12 +588,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->_email->Visible) { // email ?>
         <th data-name="_email" class="<?= $Page->_email->headerCellClass() ?>"><div id="elh_suppliers__email" class="suppliers__email"><?= $Page->renderFieldHeader($Page->_email) ?></div></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_suppliers_created_at" class="suppliers_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_suppliers_updated_at" class="suppliers_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
-<?php } ?>
 <?php
 // Render list options (header, right)
 $Page->ListOptions->render("header", "right");
@@ -709,22 +637,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers__email" class="el_suppliers__email">
 <span<?= $Page->_email->viewAttributes() ?>>
 <?= $Page->_email->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_created_at" class="el_suppliers_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_suppliers_updated_at" class="el_suppliers_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

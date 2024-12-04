@@ -113,9 +113,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->supplier_id->Visible) { // supplier_id ?>
         <th data-name="supplier_id" class="<?= $Page->supplier_id->headerCellClass() ?>"><div id="elh_procurements_supplier_id" class="procurements_supplier_id"><?= $Page->renderFieldHeader($Page->supplier_id) ?></div></th>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <th data-name="user_id" class="<?= $Page->user_id->headerCellClass() ?>"><div id="elh_procurements_user_id" class="procurements_user_id"><?= $Page->renderFieldHeader($Page->user_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <th data-name="status" class="<?= $Page->status->headerCellClass() ?>"><div id="elh_procurements_status" class="procurements_status"><?= $Page->renderFieldHeader($Page->status) ?></div></th>
 <?php } ?>
@@ -124,12 +121,6 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->procurement_date->Visible) { // procurement_date ?>
         <th data-name="procurement_date" class="<?= $Page->procurement_date->headerCellClass() ?>"><div id="elh_procurements_procurement_date" class="procurements_procurement_date"><?= $Page->renderFieldHeader($Page->procurement_date) ?></div></th>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_procurements_created_at" class="procurements_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_procurements_updated_at" class="procurements_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -183,14 +174,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->user_id->Visible) { // user_id ?>
-        <td data-name="user_id"<?= $Page->user_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_user_id" class="el_procurements_user_id">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->status->Visible) { // status ?>
         <td data-name="status"<?= $Page->status->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_status" class="el_procurements_status">
@@ -212,22 +195,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_procurement_date" class="el_procurements_procurement_date">
 <span<?= $Page->procurement_date->viewAttributes() ?>>
 <?= $Page->procurement_date->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_created_at" class="el_procurements_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_updated_at" class="el_procurements_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -276,9 +243,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->supplier_id->Visible) { // supplier_id ?>
         <th data-name="supplier_id" class="<?= $Page->supplier_id->headerCellClass() ?>"><div id="elh_procurements_supplier_id" class="procurements_supplier_id"><?= $Page->renderFieldHeader($Page->supplier_id) ?></div></th>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <th data-name="user_id" class="<?= $Page->user_id->headerCellClass() ?>"><div id="elh_procurements_user_id" class="procurements_user_id"><?= $Page->renderFieldHeader($Page->user_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <th data-name="status" class="<?= $Page->status->headerCellClass() ?>"><div id="elh_procurements_status" class="procurements_status"><?= $Page->renderFieldHeader($Page->status) ?></div></th>
 <?php } ?>
@@ -287,12 +251,6 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->procurement_date->Visible) { // procurement_date ?>
         <th data-name="procurement_date" class="<?= $Page->procurement_date->headerCellClass() ?>"><div id="elh_procurements_procurement_date" class="procurements_procurement_date"><?= $Page->renderFieldHeader($Page->procurement_date) ?></div></th>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_procurements_created_at" class="procurements_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_procurements_updated_at" class="procurements_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -330,14 +288,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->user_id->Visible) { // user_id ?>
-        <td data-name="user_id"<?= $Page->user_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_user_id" class="el_procurements_user_id">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->status->Visible) { // status ?>
         <td data-name="status"<?= $Page->status->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_status" class="el_procurements_status">
@@ -359,22 +309,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_procurement_date" class="el_procurements_procurement_date">
 <span<?= $Page->procurement_date->viewAttributes() ?>>
 <?= $Page->procurement_date->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_created_at" class="el_procurements_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_updated_at" class="el_procurements_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -456,9 +390,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->supplier_id->Visible) { // supplier_id ?>
         <th data-name="supplier_id" class="<?= $Page->supplier_id->headerCellClass() ?>"><div id="elh_procurements_supplier_id" class="procurements_supplier_id"><?= $Page->renderFieldHeader($Page->supplier_id) ?></div></th>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <th data-name="user_id" class="<?= $Page->user_id->headerCellClass() ?>"><div id="elh_procurements_user_id" class="procurements_user_id"><?= $Page->renderFieldHeader($Page->user_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <th data-name="status" class="<?= $Page->status->headerCellClass() ?>"><div id="elh_procurements_status" class="procurements_status"><?= $Page->renderFieldHeader($Page->status) ?></div></th>
 <?php } ?>
@@ -467,12 +398,6 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->procurement_date->Visible) { // procurement_date ?>
         <th data-name="procurement_date" class="<?= $Page->procurement_date->headerCellClass() ?>"><div id="elh_procurements_procurement_date" class="procurements_procurement_date"><?= $Page->renderFieldHeader($Page->procurement_date) ?></div></th>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_procurements_created_at" class="procurements_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_procurements_updated_at" class="procurements_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -526,14 +451,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->user_id->Visible) { // user_id ?>
-        <td data-name="user_id"<?= $Page->user_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_user_id" class="el_procurements_user_id">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->status->Visible) { // status ?>
         <td data-name="status"<?= $Page->status->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_status" class="el_procurements_status">
@@ -555,22 +472,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_procurement_date" class="el_procurements_procurement_date">
 <span<?= $Page->procurement_date->viewAttributes() ?>>
 <?= $Page->procurement_date->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_created_at" class="el_procurements_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_updated_at" class="el_procurements_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>
@@ -619,9 +520,6 @@ $Page->ListOptions->render("header", "left");
 <?php if ($Page->supplier_id->Visible) { // supplier_id ?>
         <th data-name="supplier_id" class="<?= $Page->supplier_id->headerCellClass() ?>"><div id="elh_procurements_supplier_id" class="procurements_supplier_id"><?= $Page->renderFieldHeader($Page->supplier_id) ?></div></th>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <th data-name="user_id" class="<?= $Page->user_id->headerCellClass() ?>"><div id="elh_procurements_user_id" class="procurements_user_id"><?= $Page->renderFieldHeader($Page->user_id) ?></div></th>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <th data-name="status" class="<?= $Page->status->headerCellClass() ?>"><div id="elh_procurements_status" class="procurements_status"><?= $Page->renderFieldHeader($Page->status) ?></div></th>
 <?php } ?>
@@ -630,12 +528,6 @@ $Page->ListOptions->render("header", "left");
 <?php } ?>
 <?php if ($Page->procurement_date->Visible) { // procurement_date ?>
         <th data-name="procurement_date" class="<?= $Page->procurement_date->headerCellClass() ?>"><div id="elh_procurements_procurement_date" class="procurements_procurement_date"><?= $Page->renderFieldHeader($Page->procurement_date) ?></div></th>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th data-name="created_at" class="<?= $Page->created_at->headerCellClass() ?>"><div id="elh_procurements_created_at" class="procurements_created_at"><?= $Page->renderFieldHeader($Page->created_at) ?></div></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th data-name="updated_at" class="<?= $Page->updated_at->headerCellClass() ?>"><div id="elh_procurements_updated_at" class="procurements_updated_at"><?= $Page->renderFieldHeader($Page->updated_at) ?></div></th>
 <?php } ?>
 <?php
 // Render list options (header, right)
@@ -673,14 +565,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 </span>
 </td>
     <?php } ?>
-    <?php if ($Page->user_id->Visible) { // user_id ?>
-        <td data-name="user_id"<?= $Page->user_id->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_user_id" class="el_procurements_user_id">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
     <?php if ($Page->status->Visible) { // status ?>
         <td data-name="status"<?= $Page->status->cellAttributes() ?>>
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_status" class="el_procurements_status">
@@ -702,22 +586,6 @@ $Page->ListOptions->render("body", "left", $Page->RowCount);
 <span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_procurement_date" class="el_procurements_procurement_date">
 <span<?= $Page->procurement_date->viewAttributes() ?>>
 <?= $Page->procurement_date->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->created_at->Visible) { // created_at ?>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_created_at" class="el_procurements_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-    <?php } ?>
-    <?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el<?= $Page->RowIndex == '$rowindex$' ? '$rowindex$' : $Page->RowCount ?>_procurements_updated_at" class="el_procurements_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
     <?php } ?>

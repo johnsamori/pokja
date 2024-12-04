@@ -650,6 +650,9 @@ class DocumentsAdd extends Documents
 // Get upload files
     protected function getUploadFiles(): void
     {
+        $this->file_name->Upload->Index = $this->FormIndex;
+        $this->file_name->Upload->uploadFile();
+        $this->file_name->CurrentValue = $this->file_name->Upload->FileName;
     }
 
     // Load default values
@@ -669,16 +672,6 @@ class DocumentsAdd extends Documents
                 $this->procurement_id->Visible = false; // Disable update for API request
             } else {
                 $this->procurement_id->setFormValue($val);
-            }
-        }
-
-        // Check field name 'file_name' before field var 'x_file_name'
-        $val = $this->hasFormValue("file_name") ? $this->getFormValue("file_name") : $this->getFormValue("x_file_name");
-        if (!$this->file_name->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->file_name->Visible = false; // Disable update for API request
-            } else {
-                $this->file_name->setFormValue($val);
             }
         }
 
@@ -705,13 +698,13 @@ class DocumentsAdd extends Documents
 
         // Check field name 'id' first before field var 'x_id'
         $val = $this->hasFormValue("id") ? $this->getFormValue("id") : $this->getFormValue("x_id");
+        $this->getUploadFiles(); // Get upload files
     }
 
     // Restore form values
     public function restoreFormValues(): void
     {
         $this->procurement_id->CurrentValue = $this->procurement_id->FormValue;
-        $this->file_name->CurrentValue = $this->file_name->FormValue;
         $this->file_path->CurrentValue = $this->file_path->FormValue;
         $this->uploaded_at->CurrentValue = $this->uploaded_at->FormValue;
         $this->uploaded_at->CurrentValue = UnformatDateTime($this->uploaded_at->CurrentValue, $this->uploaded_at->formatPattern());
@@ -756,7 +749,8 @@ class DocumentsAdd extends Documents
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
         $this->procurement_id->setDbValue($row['procurement_id']);
-        $this->file_name->setDbValue($row['file_name']);
+        $this->file_name->Upload->DbValue = $row['file_name'];
+        $this->file_name->setDbValue($this->file_name->Upload->DbValue);
         $this->file_path->setDbValue($row['file_path']);
         $this->uploaded_at->setDbValue($row['uploaded_at']);
     }
@@ -846,7 +840,11 @@ class DocumentsAdd extends Documents
             }
 
             // file_name
-            $this->file_name->ViewValue = $this->file_name->CurrentValue;
+            if (!IsEmpty($this->file_name->Upload->DbValue)) {
+                $this->file_name->ViewValue = $this->file_name->Upload->DbValue;
+            } else {
+                $this->file_name->ViewValue = "";
+            }
 
             // file_path
             $this->file_path->ViewValue = $this->file_path->CurrentValue;
@@ -860,6 +858,7 @@ class DocumentsAdd extends Documents
 
             // file_name
             $this->file_name->HrefValue = "";
+            $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
 
             // file_path
             $this->file_path->HrefValue = "";
@@ -894,11 +893,20 @@ class DocumentsAdd extends Documents
 
             // file_name
             $this->file_name->setupEditAttributes();
-            if (!$this->file_name->Raw) {
-                $this->file_name->CurrentValue = HtmlDecode($this->file_name->CurrentValue);
+            if (!IsEmpty($this->file_name->Upload->DbValue)) {
+                $this->file_name->EditValue = $this->file_name->Upload->DbValue;
+            } else {
+                $this->file_name->EditValue = "";
             }
-            $this->file_name->EditValue = HtmlEncode($this->file_name->CurrentValue);
-            $this->file_name->PlaceHolder = RemoveHtml($this->file_name->caption());
+            if (!IsEmpty($this->file_name->CurrentValue)) {
+                $this->file_name->Upload->FileName = $this->file_name->CurrentValue;
+            }
+            if (!Config("CREATE_UPLOAD_FILE_ON_COPY")) {
+                $this->file_name->Upload->DbValue = null;
+            }
+            if ($this->isShow() || $this->isCopy()) {
+                $this->file_name->Upload->setupTempDirectory();
+            }
 
             // file_path
             $this->file_path->setupEditAttributes();
@@ -920,6 +928,7 @@ class DocumentsAdd extends Documents
 
             // file_name
             $this->file_name->HrefValue = "";
+            $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
 
             // file_path
             $this->file_path->HrefValue = "";
@@ -951,7 +960,7 @@ class DocumentsAdd extends Documents
                 }
             }
             if ($this->file_name->Visible && $this->file_name->Required) {
-                if (!$this->file_name->IsDetailKey && IsEmpty($this->file_name->FormValue)) {
+                if ($this->file_name->Upload->FileName == "" && !$this->file_name->Upload->KeepFile) {
                     $this->file_name->addErrorMessage(str_replace("%s", $this->file_name->caption(), $this->file_name->RequiredErrorMessage));
                 }
             }
@@ -986,6 +995,13 @@ class DocumentsAdd extends Documents
     {
         // Get new row
         $newRow = $this->getAddRow();
+        if ($this->file_name->Visible && !$this->file_name->Upload->KeepFile) {
+            if (!IsEmpty($this->file_name->Upload->FileName)) {
+                $this->file_name->Upload->DbValue = null;
+                FixUploadFileNames($this->file_name);
+                $this->file_name->setDbValueDef($newRow, $this->file_name->Upload->FileName, false);
+            }
+        }
 
         // Update current values
         $this->Fields->setCurrentValues($newRow);
@@ -999,6 +1015,13 @@ class DocumentsAdd extends Documents
         if ($insertRow) {
             $addRow = $this->insert($newRow);
             if ($addRow) {
+                if ($this->file_name->Visible && !$this->file_name->Upload->KeepFile) {
+                    $this->file_name->Upload->DbValue = null;
+                    if (!SaveUploadFiles($this->file_name, $newRow['file_name'], false)) {
+                        $this->setFailureMessage($this->language->phrase("UploadError7"));
+                        return false;
+                    }
+                }
             } elseif (!IsEmpty($this->DbErrorMessage)) { // Show database error
                 $this->setFailureMessage($this->DbErrorMessage);
             }
@@ -1040,7 +1063,14 @@ class DocumentsAdd extends Documents
         $this->procurement_id->setDbValueDef($newRow, $this->procurement_id->CurrentValue, false);
 
         // file_name
-        $this->file_name->setDbValueDef($newRow, $this->file_name->CurrentValue, false);
+        if ($this->file_name->Visible && !$this->file_name->Upload->KeepFile) {
+            if ($this->file_name->Upload->FileName == "") {
+                $newRow['file_name'] = null;
+            } else {
+                FixUploadTempFileNames($this->file_name);
+                $newRow['file_name'] = $this->file_name->Upload->FileName;
+            }
+        }
 
         // file_path
         $this->file_path->setDbValueDef($newRow, $this->file_path->CurrentValue, false);

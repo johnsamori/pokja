@@ -68,12 +68,6 @@ $Page->showMessage();
 <?php if ($Page->price->Visible) { // price ?>
         <th class="<?= $Page->price->headerCellClass() ?>"><span id="elh_items_price" class="items_price"><?= $Page->price->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th class="<?= $Page->created_at->headerCellClass() ?>"><span id="elh_items_created_at" class="items_created_at"><?= $Page->created_at->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th class="<?= $Page->updated_at->headerCellClass() ?>"><span id="elh_items_updated_at" class="items_updated_at"><?= $Page->updated_at->caption() ?></span></th>
-<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -140,22 +134,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->price->viewAttributes() ?>>
 <?= $Page->price->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <td<?= $Page->created_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td<?= $Page->updated_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

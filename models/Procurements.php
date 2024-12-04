@@ -70,8 +70,8 @@ class Procurements extends DbTable
     public DbField $status;
     public DbField $total_price;
     public DbField $procurement_date;
-    public DbField $created_at;
-    public DbField $updated_at;
+    public DbField $ip;
+    public DbField $_username;
 
     // Page ID
     public string $PageID = ""; // To be set by subclass
@@ -239,10 +239,10 @@ class Procurements extends DbTable
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
+        $this->user_id->addMethod("getAutoUpdateValue", fn() => CurrentUserID());
         $this->user_id->InputTextType = "text";
         $this->user_id->Raw = true;
         $this->user_id->Nullable = false; // NOT NULL field
-        $this->user_id->Required = true; // Required field
         $this->user_id->DefaultErrorMessage = $this->language->phrase("IncorrectInteger");
         $this->user_id->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
         $this->Fields['user_id'] = &$this->user_id;
@@ -332,57 +332,51 @@ class Procurements extends DbTable
         $this->procurement_date->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['procurement_date'] = &$this->procurement_date;
 
-        // created_at
-        $this->created_at = new DbField(
+        // ip
+        $this->ip = new DbField(
             $this, // Table
-            'x_created_at', // Variable name
-            'created_at', // Name
-            '`created_at`', // Expression
-            CastDateFieldForLike("`created_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
+            'x_ip', // Variable name
+            'ip', // Name
+            '`ip`', // Expression
+            '`ip`', // Basic search expression
+            200, // Type
+            64, // Size
+            -1, // Date/Time format
             false, // Is upload field
-            '`created_at`', // Virtual expression
+            '`ip`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->created_at->InputTextType = "text";
-        $this->created_at->Raw = true;
-        $this->created_at->Nullable = false; // NOT NULL field
-        $this->created_at->Required = true; // Required field
-        $this->created_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->created_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['created_at'] = &$this->created_at;
+        $this->ip->addMethod("getAutoUpdateValue", fn() => CurrentUserIP());
+        $this->ip->InputTextType = "text";
+        $this->ip->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->Fields['ip'] = &$this->ip;
 
-        // updated_at
-        $this->updated_at = new DbField(
+        // username
+        $this->_username = new DbField(
             $this, // Table
-            'x_updated_at', // Variable name
-            'updated_at', // Name
-            '`updated_at`', // Expression
-            CastDateFieldForLike("`updated_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
+            'x__username', // Variable name
+            'username', // Name
+            '`username`', // Expression
+            '`username`', // Basic search expression
+            200, // Type
+            255, // Size
+            -1, // Date/Time format
             false, // Is upload field
-            '`updated_at`', // Virtual expression
+            '`username`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->updated_at->InputTextType = "text";
-        $this->updated_at->Raw = true;
-        $this->updated_at->Nullable = false; // NOT NULL field
-        $this->updated_at->Required = true; // Required field
-        $this->updated_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->updated_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['updated_at'] = &$this->updated_at;
+        $this->_username->addMethod("getAutoUpdateValue", fn() => CurrentUserName());
+        $this->_username->InputTextType = "text";
+        $this->_username->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->Fields['username'] = &$this->_username;
 
         // Cache profile
         $this->cacheProfile = new QueryCacheProfile(0, $this->TableVar);
@@ -915,8 +909,8 @@ class Procurements extends DbTable
         $this->status->DbValue = $row['status'];
         $this->total_price->DbValue = $row['total_price'];
         $this->procurement_date->DbValue = $row['procurement_date'];
-        $this->created_at->DbValue = $row['created_at'];
-        $this->updated_at->DbValue = $row['updated_at'];
+        $this->ip->DbValue = $row['ip'];
+        $this->_username->DbValue = $row['username'];
     }
 
     // Delete uploaded files
@@ -1279,8 +1273,8 @@ class Procurements extends DbTable
         $this->status->setDbValue($row['status']);
         $this->total_price->setDbValue($row['total_price']);
         $this->procurement_date->setDbValue($row['procurement_date']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->ip->setDbValue($row['ip']);
+        $this->_username->setDbValue($row['username']);
     }
 
     // Render list content
@@ -1326,9 +1320,9 @@ class Procurements extends DbTable
 
         // procurement_date
 
-        // created_at
+        // ip
 
-        // updated_at
+        // username
 
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
@@ -1394,13 +1388,11 @@ class Procurements extends DbTable
         $this->procurement_date->ViewValue = $this->procurement_date->CurrentValue;
         $this->procurement_date->ViewValue = FormatDateTime($this->procurement_date->ViewValue, $this->procurement_date->formatPattern());
 
-        // created_at
-        $this->created_at->ViewValue = $this->created_at->CurrentValue;
-        $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+        // ip
+        $this->ip->ViewValue = $this->ip->CurrentValue;
 
-        // updated_at
-        $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-        $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+        // username
+        $this->_username->ViewValue = $this->_username->CurrentValue;
 
         // id
         $this->id->HrefValue = "";
@@ -1430,13 +1422,13 @@ class Procurements extends DbTable
         $this->procurement_date->HrefValue = "";
         $this->procurement_date->TooltipValue = "";
 
-        // created_at
-        $this->created_at->HrefValue = "";
-        $this->created_at->TooltipValue = "";
+        // ip
+        $this->ip->HrefValue = "";
+        $this->ip->TooltipValue = "";
 
-        // updated_at
-        $this->updated_at->HrefValue = "";
-        $this->updated_at->TooltipValue = "";
+        // username
+        $this->_username->HrefValue = "";
+        $this->_username->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1466,12 +1458,6 @@ class Procurements extends DbTable
         $this->supplier_id->PlaceHolder = RemoveHtml($this->supplier_id->caption());
 
         // user_id
-        $this->user_id->setupEditAttributes();
-        $this->user_id->EditValue = $this->user_id->CurrentValue;
-        $this->user_id->PlaceHolder = RemoveHtml($this->user_id->caption());
-        if (strval($this->user_id->EditValue) != "" && is_numeric($this->user_id->EditValue)) {
-            $this->user_id->EditValue = FormatNumber($this->user_id->EditValue, null);
-        }
 
         // status
         $this->status->EditValue = $this->status->options(false);
@@ -1490,15 +1476,9 @@ class Procurements extends DbTable
         $this->procurement_date->EditValue = FormatDateTime($this->procurement_date->CurrentValue, $this->procurement_date->formatPattern());
         $this->procurement_date->PlaceHolder = RemoveHtml($this->procurement_date->caption());
 
-        // created_at
-        $this->created_at->setupEditAttributes();
-        $this->created_at->EditValue = FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
+        // ip
 
-        // updated_at
-        $this->updated_at->setupEditAttributes();
-        $this->updated_at->EditValue = FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
-        $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
+        // username
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1536,8 +1516,8 @@ class Procurements extends DbTable
                     $doc->exportCaption($this->status);
                     $doc->exportCaption($this->total_price);
                     $doc->exportCaption($this->procurement_date);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
+                    $doc->exportCaption($this->ip);
+                    $doc->exportCaption($this->_username);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->item_id);
@@ -1546,8 +1526,8 @@ class Procurements extends DbTable
                     $doc->exportCaption($this->status);
                     $doc->exportCaption($this->total_price);
                     $doc->exportCaption($this->procurement_date);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
+                    $doc->exportCaption($this->ip);
+                    $doc->exportCaption($this->_username);
                 }
                 $doc->endExportRow();
             }
@@ -1582,8 +1562,8 @@ class Procurements extends DbTable
 						$doc->exportCaption($this->status);
 						$doc->exportCaption($this->total_price);
 						$doc->exportCaption($this->procurement_date);
-						$doc->exportCaption($this->created_at);
-						$doc->exportCaption($this->updated_at);
+						$doc->exportCaption($this->ip);
+						$doc->exportCaption($this->_username);
 						$doc->endExportRow(); // End of modification by Masino Sinaga, table header will be repeated at the top of each page after page break, September 11, 2023
                     }
                 }
@@ -1604,8 +1584,8 @@ class Procurements extends DbTable
                         $doc->exportField($this->status);
                         $doc->exportField($this->total_price);
                         $doc->exportField($this->procurement_date);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
+                        $doc->exportField($this->ip);
+                        $doc->exportField($this->_username);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->item_id);
@@ -1614,8 +1594,8 @@ class Procurements extends DbTable
                         $doc->exportField($this->status);
                         $doc->exportField($this->total_price);
                         $doc->exportField($this->procurement_date);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
+                        $doc->exportField($this->ip);
+                        $doc->exportField($this->_username);
                     }
                     $doc->endExportRow($rowCnt);
                 }

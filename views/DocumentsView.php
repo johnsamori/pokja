@@ -100,7 +100,8 @@ loadjs.ready("head", function () {
         <td data-name="file_name"<?= $Page->file_name->cellAttributes() ?>>
 <span id="el_documents_file_name">
 <span<?= $Page->file_name->viewAttributes() ?>>
-<?= $Page->file_name->getViewValue() ?></span>
+<?= GetFileViewTag($Page->file_name, $Page->file_name->getViewValue(), false) ?>
+</span>
 </span>
 </td>
     </tr>

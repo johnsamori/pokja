@@ -160,8 +160,6 @@ class SuppliersList extends Suppliers
         $this->address->setVisibility();
         $this->phone->setVisibility();
         $this->_email->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
     }
 
     // Constructor
@@ -1065,8 +1063,6 @@ class SuppliersList extends Suppliers
         $filterList = Concat($filterList, $this->address->AdvancedSearch->toJson(), ","); // Field address
         $filterList = Concat($filterList, $this->phone->AdvancedSearch->toJson(), ","); // Field phone
         $filterList = Concat($filterList, $this->_email->AdvancedSearch->toJson(), ","); // Field email
-        $filterList = Concat($filterList, $this->created_at->AdvancedSearch->toJson(), ","); // Field created_at
-        $filterList = Concat($filterList, $this->updated_at->AdvancedSearch->toJson(), ","); // Field updated_at
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1145,22 +1141,6 @@ class SuppliersList extends Suppliers
         $this->_email->AdvancedSearch->SearchValue2 = $filter["y__email"] ?? "";
         $this->_email->AdvancedSearch->SearchOperator2 = $filter["w__email"] ?? "";
         $this->_email->AdvancedSearch->save();
-
-        // Field created_at
-        $this->created_at->AdvancedSearch->SearchValue = $filter["x_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchOperator = $filter["z_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchCondition = $filter["v_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchValue2 = $filter["y_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchOperator2 = $filter["w_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->save();
-
-        // Field updated_at
-        $this->updated_at->AdvancedSearch->SearchValue = $filter["x_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchOperator = $filter["z_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchCondition = $filter["v_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchValue2 = $filter["y_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchOperator2 = $filter["w_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->save();
         $this->BasicSearch->setKeyword($filter[Config("TABLE_BASIC_SEARCH")] ?? "");
         $this->BasicSearch->setType($filter[Config("TABLE_BASIC_SEARCH_TYPE")] ?? "");
     }
@@ -1281,8 +1261,6 @@ class SuppliersList extends Suppliers
             $this->updateSort($this->address); // address
             $this->updateSort($this->phone); // phone
             $this->updateSort($this->_email); // email
-            $this->updateSort($this->created_at); // created_at
-            $this->updateSort($this->updated_at); // updated_at
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1312,8 +1290,6 @@ class SuppliersList extends Suppliers
                 $this->address->setSort("");
                 $this->phone->setSort("");
                 $this->_email->setSort("");
-                $this->created_at->setSort("");
-                $this->updated_at->setSort("");
             }
 
             // Reset start position
@@ -1529,8 +1505,6 @@ class SuppliersList extends Suppliers
             $this->createColumnOption($option, "address");
             $this->createColumnOption($option, "phone");
             $this->createColumnOption($option, "email");
-            $this->createColumnOption($option, "created_at");
-            $this->createColumnOption($option, "updated_at");
         }
 
         // Set up custom actions
@@ -1972,8 +1946,6 @@ class SuppliersList extends Suppliers
         $this->address->setDbValue($row['address']);
         $this->phone->setDbValue($row['phone']);
         $this->_email->setDbValue($row['email']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
     }
 
     // Return a row with default values
@@ -1985,8 +1957,6 @@ class SuppliersList extends Suppliers
         $row['address'] = $this->address->DefaultValue;
         $row['phone'] = $this->phone->DefaultValue;
         $row['email'] = $this->_email->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
         return $row;
     }
 
@@ -2037,10 +2007,6 @@ class SuppliersList extends Suppliers
 
         // email
 
-        // created_at
-
-        // updated_at
-
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
@@ -2057,14 +2023,6 @@ class SuppliersList extends Suppliers
 
             // email
             $this->_email->ViewValue = $this->_email->CurrentValue;
-
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
-
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
 
             // id
             $this->id->HrefValue = "";
@@ -2085,14 +2043,6 @@ class SuppliersList extends Suppliers
             // email
             $this->_email->HrefValue = "";
             $this->_email->TooltipValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-            $this->created_at->TooltipValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
-            $this->updated_at->TooltipValue = "";
         }
 
         // Call Row Rendered event

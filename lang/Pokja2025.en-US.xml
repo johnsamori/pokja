@@ -474,11 +474,14 @@
       <field id="price">
         <phrase id="fldcaption" value="price" />
       </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
+      <field id="_userid">
+        <phrase id="fldcaption" value="userid" />
       </field>
-      <field id="updated_at">
-        <phrase id="fldcaption" value="updated at" />
+      <field id="_username">
+        <phrase id="fldcaption" value="username" />
+      </field>
+      <field id="ip">
+        <phrase id="fldcaption" value="ip" />
       </field>
     </table>
     <table id="procurements">
@@ -514,11 +517,11 @@
       <field id="procurement_date">
         <phrase id="fldcaption" value="procurement date" />
       </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
+      <field id="ip">
+        <phrase id="fldcaption" value="ip" />
       </field>
-      <field id="updated_at">
-        <phrase id="fldcaption" value="updated at" />
+      <field id="_username">
+        <phrase id="fldcaption" value="username" />
       </field>
     </table>
     <table id="suppliers">
@@ -537,12 +540,6 @@
       </field>
       <field id="_email">
         <phrase id="fldcaption" value="email" />
-      </field>
-      <field id="created_at">
-        <phrase id="fldcaption" value="created at" />
-      </field>
-      <field id="updated_at">
-        <phrase id="fldcaption" value="updated at" />
       </field>
     </table>
   </project>

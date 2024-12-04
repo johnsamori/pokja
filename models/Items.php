@@ -69,8 +69,9 @@ class Items extends DbTable
     public DbField $quantity;
     public DbField $unit;
     public DbField $price;
-    public DbField $created_at;
-    public DbField $updated_at;
+    public DbField $_userid;
+    public DbField $_username;
+    public DbField $ip;
 
     // Page ID
     public string $PageID = ""; // To be set by subclass
@@ -256,57 +257,76 @@ class Items extends DbTable
         $this->price->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
         $this->Fields['price'] = &$this->price;
 
-        // created_at
-        $this->created_at = new DbField(
+        // userid
+        $this->_userid = new DbField(
             $this, // Table
-            'x_created_at', // Variable name
-            'created_at', // Name
-            '`created_at`', // Expression
-            CastDateFieldForLike("`created_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
+            'x__userid', // Variable name
+            'userid', // Name
+            '`userid`', // Expression
+            '`userid`', // Basic search expression
+            3, // Type
+            11, // Size
+            -1, // Date/Time format
             false, // Is upload field
-            '`created_at`', // Virtual expression
+            '`userid`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->created_at->InputTextType = "text";
-        $this->created_at->Raw = true;
-        $this->created_at->Nullable = false; // NOT NULL field
-        $this->created_at->Required = true; // Required field
-        $this->created_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->created_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['created_at'] = &$this->created_at;
+        $this->_userid->addMethod("getAutoUpdateValue", fn() => CurrentUserID());
+        $this->_userid->InputTextType = "text";
+        $this->_userid->Raw = true;
+        $this->_userid->DefaultErrorMessage = $this->language->phrase("IncorrectInteger");
+        $this->_userid->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN", "IS NULL", "IS NOT NULL"];
+        $this->Fields['userid'] = &$this->_userid;
 
-        // updated_at
-        $this->updated_at = new DbField(
+        // username
+        $this->_username = new DbField(
             $this, // Table
-            'x_updated_at', // Variable name
-            'updated_at', // Name
-            '`updated_at`', // Expression
-            CastDateFieldForLike("`updated_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
+            'x__username', // Variable name
+            'username', // Name
+            '`username`', // Expression
+            '`username`', // Basic search expression
+            200, // Type
+            255, // Size
+            -1, // Date/Time format
             false, // Is upload field
-            '`updated_at`', // Virtual expression
+            '`username`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
             'TEXT' // Edit Tag
         );
-        $this->updated_at->InputTextType = "text";
-        $this->updated_at->Raw = true;
-        $this->updated_at->Nullable = false; // NOT NULL field
-        $this->updated_at->Required = true; // Required field
-        $this->updated_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->updated_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['updated_at'] = &$this->updated_at;
+        $this->_username->addMethod("getAutoUpdateValue", fn() => CurrentUserName());
+        $this->_username->InputTextType = "text";
+        $this->_username->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->Fields['username'] = &$this->_username;
+
+        // ip
+        $this->ip = new DbField(
+            $this, // Table
+            'x_ip', // Variable name
+            'ip', // Name
+            '`ip`', // Expression
+            '`ip`', // Basic search expression
+            200, // Type
+            255, // Size
+            -1, // Date/Time format
+            false, // Is upload field
+            '`ip`', // Virtual expression
+            false, // Is virtual
+            false, // Force selection
+            false, // Is Virtual search
+            'FORMATTED TEXT', // View Tag
+            'TEXT' // Edit Tag
+        );
+        $this->ip->addMethod("getAutoUpdateValue", fn() => CurrentUserIP());
+        $this->ip->InputTextType = "text";
+        $this->ip->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->Fields['ip'] = &$this->ip;
 
         // Cache profile
         $this->cacheProfile = new QueryCacheProfile(0, $this->TableVar);
@@ -838,8 +858,9 @@ class Items extends DbTable
         $this->quantity->DbValue = $row['quantity'];
         $this->unit->DbValue = $row['unit'];
         $this->price->DbValue = $row['price'];
-        $this->created_at->DbValue = $row['created_at'];
-        $this->updated_at->DbValue = $row['updated_at'];
+        $this->_userid->DbValue = $row['userid'];
+        $this->_username->DbValue = $row['username'];
+        $this->ip->DbValue = $row['ip'];
     }
 
     // Delete uploaded files
@@ -1201,8 +1222,9 @@ class Items extends DbTable
         $this->quantity->setDbValue($row['quantity']);
         $this->unit->setDbValue($row['unit']);
         $this->price->setDbValue($row['price']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->_userid->setDbValue($row['userid']);
+        $this->_username->setDbValue($row['username']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Render list content
@@ -1246,9 +1268,11 @@ class Items extends DbTable
 
         // price
 
-        // created_at
+        // userid
 
-        // updated_at
+        // username
+
+        // ip
 
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
@@ -1270,13 +1294,15 @@ class Items extends DbTable
         $this->price->ViewValue = $this->price->CurrentValue;
         $this->price->ViewValue = FormatNumber($this->price->ViewValue, $this->price->formatPattern());
 
-        // created_at
-        $this->created_at->ViewValue = $this->created_at->CurrentValue;
-        $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+        // userid
+        $this->_userid->ViewValue = $this->_userid->CurrentValue;
+        $this->_userid->ViewValue = FormatNumber($this->_userid->ViewValue, $this->_userid->formatPattern());
 
-        // updated_at
-        $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-        $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+        // username
+        $this->_username->ViewValue = $this->_username->CurrentValue;
+
+        // ip
+        $this->ip->ViewValue = $this->ip->CurrentValue;
 
         // id
         $this->id->HrefValue = "";
@@ -1302,13 +1328,17 @@ class Items extends DbTable
         $this->price->HrefValue = "";
         $this->price->TooltipValue = "";
 
-        // created_at
-        $this->created_at->HrefValue = "";
-        $this->created_at->TooltipValue = "";
+        // userid
+        $this->_userid->HrefValue = "";
+        $this->_userid->TooltipValue = "";
 
-        // updated_at
-        $this->updated_at->HrefValue = "";
-        $this->updated_at->TooltipValue = "";
+        // username
+        $this->_username->HrefValue = "";
+        $this->_username->TooltipValue = "";
+
+        // ip
+        $this->ip->HrefValue = "";
+        $this->ip->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1369,15 +1399,11 @@ class Items extends DbTable
             $this->price->EditValue = FormatNumber($this->price->EditValue, null);
         }
 
-        // created_at
-        $this->created_at->setupEditAttributes();
-        $this->created_at->EditValue = FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
+        // userid
 
-        // updated_at
-        $this->updated_at->setupEditAttributes();
-        $this->updated_at->EditValue = FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
-        $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
+        // username
+
+        // ip
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1414,8 +1440,9 @@ class Items extends DbTable
                     $doc->exportCaption($this->quantity);
                     $doc->exportCaption($this->unit);
                     $doc->exportCaption($this->price);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
+                    $doc->exportCaption($this->_userid);
+                    $doc->exportCaption($this->_username);
+                    $doc->exportCaption($this->ip);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->name);
@@ -1423,8 +1450,9 @@ class Items extends DbTable
                     $doc->exportCaption($this->quantity);
                     $doc->exportCaption($this->unit);
                     $doc->exportCaption($this->price);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
+                    $doc->exportCaption($this->_userid);
+                    $doc->exportCaption($this->_username);
+                    $doc->exportCaption($this->ip);
                 }
                 $doc->endExportRow();
             }
@@ -1458,8 +1486,9 @@ class Items extends DbTable
 						$doc->exportCaption($this->quantity);
 						$doc->exportCaption($this->unit);
 						$doc->exportCaption($this->price);
-						$doc->exportCaption($this->created_at);
-						$doc->exportCaption($this->updated_at);
+						$doc->exportCaption($this->_userid);
+						$doc->exportCaption($this->_username);
+						$doc->exportCaption($this->ip);
 						$doc->endExportRow(); // End of modification by Masino Sinaga, table header will be repeated at the top of each page after page break, September 11, 2023
                     }
                 }
@@ -1479,8 +1508,9 @@ class Items extends DbTable
                         $doc->exportField($this->quantity);
                         $doc->exportField($this->unit);
                         $doc->exportField($this->price);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
+                        $doc->exportField($this->_userid);
+                        $doc->exportField($this->_username);
+                        $doc->exportField($this->ip);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->name);
@@ -1488,8 +1518,9 @@ class Items extends DbTable
                         $doc->exportField($this->quantity);
                         $doc->exportField($this->unit);
                         $doc->exportField($this->price);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
+                        $doc->exportField($this->_userid);
+                        $doc->exportField($this->_username);
+                        $doc->exportField($this->ip);
                     }
                     $doc->endExportRow($rowCnt);
                 }

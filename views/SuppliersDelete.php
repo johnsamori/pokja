@@ -65,12 +65,6 @@ $Page->showMessage();
 <?php if ($Page->_email->Visible) { // email ?>
         <th class="<?= $Page->_email->headerCellClass() ?>"><span id="elh_suppliers__email" class="suppliers__email"><?= $Page->_email->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th class="<?= $Page->created_at->headerCellClass() ?>"><span id="elh_suppliers_created_at" class="suppliers_created_at"><?= $Page->created_at->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th class="<?= $Page->updated_at->headerCellClass() ?>"><span id="elh_suppliers_updated_at" class="suppliers_updated_at"><?= $Page->updated_at->caption() ?></span></th>
-<?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -129,22 +123,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->_email->viewAttributes() ?>>
 <?= $Page->_email->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <td<?= $Page->created_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td<?= $Page->updated_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

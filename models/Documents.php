@@ -186,16 +186,18 @@ class Documents extends DbTable
             200, // Type
             255, // Size
             -1, // Date/Time format
-            false, // Is upload field
+            true, // Is upload field
             '`file_name`', // Virtual expression
             false, // Is virtual
             false, // Force selection
             false, // Is Virtual search
             'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
+            'FILE' // Edit Tag
         );
         $this->file_name->InputTextType = "text";
-        $this->file_name->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
+        $this->file_name->UploadAllowedFileExt = "pdf";
+        $this->file_name->UploadMaxFileSize = 50000000;
+        $this->file_name->SearchOperators = ["=", "<>", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['file_name'] = &$this->file_name;
 
         // file_path
@@ -772,7 +774,7 @@ class Documents extends DbTable
         }
         $this->id->DbValue = $row['id'];
         $this->procurement_id->DbValue = $row['procurement_id'];
-        $this->file_name->DbValue = $row['file_name'];
+        $this->file_name->Upload->DbValue = $row['file_name'];
         $this->file_path->DbValue = $row['file_path'];
         $this->uploaded_at->DbValue = $row['uploaded_at'];
     }
@@ -781,6 +783,12 @@ class Documents extends DbTable
     public function deleteUploadedFiles(array $row)
     {
         $this->loadDbValues($row);
+        $oldFiles = IsEmpty($row['file_name']) ? [] : [$row['file_name']];
+        foreach ($oldFiles as $oldFile) {
+            if (FileExists($this->file_name->uploadPath() . $oldFile)) {
+                DeleteFile($this->file_name->uploadPath() . $oldFile);
+            }
+        }
     }
 
     // Record filter WHERE clause
@@ -1132,7 +1140,7 @@ class Documents extends DbTable
     {
         $this->id->setDbValue($row['id']);
         $this->procurement_id->setDbValue($row['procurement_id']);
-        $this->file_name->setDbValue($row['file_name']);
+        $this->file_name->Upload->DbValue = $row['file_name'];
         $this->file_path->setDbValue($row['file_path']);
         $this->uploaded_at->setDbValue($row['uploaded_at']);
     }
@@ -1201,7 +1209,11 @@ class Documents extends DbTable
         }
 
         // file_name
-        $this->file_name->ViewValue = $this->file_name->CurrentValue;
+        if (!IsEmpty($this->file_name->Upload->DbValue)) {
+            $this->file_name->ViewValue = $this->file_name->Upload->DbValue;
+        } else {
+            $this->file_name->ViewValue = "";
+        }
 
         // file_path
         $this->file_path->ViewValue = $this->file_path->CurrentValue;
@@ -1220,6 +1232,7 @@ class Documents extends DbTable
 
         // file_name
         $this->file_name->HrefValue = "";
+        $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
         $this->file_name->TooltipValue = "";
 
         // file_path
@@ -1255,11 +1268,14 @@ class Documents extends DbTable
 
         // file_name
         $this->file_name->setupEditAttributes();
-        if (!$this->file_name->Raw) {
-            $this->file_name->CurrentValue = HtmlDecode($this->file_name->CurrentValue);
+        if (!IsEmpty($this->file_name->Upload->DbValue)) {
+            $this->file_name->EditValue = $this->file_name->Upload->DbValue;
+        } else {
+            $this->file_name->EditValue = "";
         }
-        $this->file_name->EditValue = $this->file_name->CurrentValue;
-        $this->file_name->PlaceHolder = RemoveHtml($this->file_name->caption());
+        if (!IsEmpty($this->file_name->CurrentValue)) {
+            $this->file_name->Upload->FileName = $this->file_name->CurrentValue;
+        }
 
         // file_path
         $this->file_path->setupEditAttributes();
@@ -1389,8 +1405,123 @@ class Documents extends DbTable
     public function getFileData(string $fldparm, string $key, bool $resize, int $width = 0, int $height = 0, array $plugins = []): Response
     {
         global $DownloadFileName;
+        $width = ($width > 0) ? $width : Config("THUMBNAIL_DEFAULT_WIDTH");
+        $height = ($height > 0) ? $height : Config("THUMBNAIL_DEFAULT_HEIGHT");
 
-        // No binary fields
+        // Set up field name / file name field / file type field
+        $fldName = "";
+        $fileNameFld = "";
+        $fileTypeFld = "";
+        if ($fldparm == 'file_name') {
+            $fldName = "file_name";
+            $fileNameFld = "file_name";
+        } else {
+            throw new InvalidArgumentException("Incorrect field '" . $fldparm . "'"); // Incorrect field
+        }
+
+        // Set up key values
+        $ar = explode(Config("COMPOSITE_KEY_SEPARATOR"), $key);
+        if (count($ar) == 1) {
+            $this->id->CurrentValue = $ar[0];
+        } else {
+            throw new InvalidArgumentException("Incorrect key '" . $key . "'"); // Incorrect key
+        }
+
+        // Set up filter (WHERE Clause)
+        $filter = $this->getRecordFilter();
+        $this->CurrentFilter = $filter;
+        $sql = $this->getCurrentSql();
+        $conn = $this->getConnection();
+        $dbtype = GetConnectionType($this->Dbid);
+        $response = ResponseFactory()->createResponse();
+        if ($row = $conn->fetchAssociative($sql)) {
+            $val = $row[$fldName];
+            if (!IsEmpty($val)) {
+                $fld = $this->Fields[$fldName];
+
+                // Binary data
+                if ($fld->DataType == DataType::BLOB) {
+                    if ($dbtype != "MYSQL") {
+                        if (is_resource($val) && get_resource_type($val) == "stream") { // Byte array
+                            $val = stream_get_contents($val);
+                        }
+                    }
+                    if ($resize) {
+                        ResizeBinary($val, $width, $height, plugins: $plugins);
+                    }
+
+                    // Write file type
+                    if ($fileTypeFld != "" && !IsEmpty($row[$fileTypeFld])) {
+                        $response = $response->withHeader("Content-type", $row[$fileTypeFld]);
+                    } else {
+                        $response = $response->withHeader("Content-type", ContentType($val));
+                    }
+
+                    // Write file name
+                    $downloadPdf = !Config("EMBED_PDF") && Config("DOWNLOAD_PDF_FILE");
+                    if ($fileNameFld != "" && !IsEmpty($row[$fileNameFld])) {
+                        $fileName = $row[$fileNameFld];
+                        $pathinfo = pathinfo($fileName);
+                        $ext = strtolower($pathinfo["extension"] ?? "");
+                        $isPdf = SameText($ext, "pdf");
+                        if ($downloadPdf || !$isPdf) { // Skip header if not download PDF
+                            $response = $response->withHeader("Content-Disposition", "attachment; filename=\"" . $fileName . "\"");
+                        }
+                    } else {
+                        $ext = ContentExtension($val);
+                        $isPdf = SameText($ext, ".pdf");
+                        if ($isPdf && $downloadPdf) { // Add header if download PDF
+                            $response = $response->withHeader("Content-Disposition", "attachment" . ($DownloadFileName ? "; filename=\"" . $DownloadFileName . "\"" : ""));
+                        }
+                    }
+
+                    // Write file data
+                    if (
+                        StartsString("PK", $val)
+                        && ContainsString($val, "[Content_Types].xml")
+                        && ContainsString($val, "_rels")
+                        && ContainsString($val, "docProps")
+                    ) { // Fix Office 2007 documents
+                        if (!EndsString("\0\0\0", $val)) { // Not ends with 3 or 4 \0
+                            $val .= "\0\0\0\0";
+                        }
+                    }
+
+                    // Clear any debug message
+                    if (ob_get_length()) {
+                        ob_end_clean();
+                    }
+
+                    // Write binary data
+                    $response = $response->write($val);
+
+                // Upload to folder
+                } else {
+                    if ($fld->UploadMultiple) {
+                        $files = explode(Config("MULTIPLE_UPLOAD_SEPARATOR"), $val);
+                    } else {
+                        $files = [$val];
+                    }
+                    $data = [];
+                    $ar = [];
+                    if ($fld->hasMethod("getUploadPath")) { // Check field level upload path
+                        $fld->UploadPath = $fld->getUploadPath();
+                    }
+                    foreach ($files as $file) {
+                        if (!IsEmpty($file)) {
+                            if (Config("ENCRYPT_FILE_PATH")) {
+                                $ar[$file] = FullUrl(GetApiUrl(Config("API_FILE_ACTION") .
+                                    "/" . $this->TableVar . "/" . Encrypt($fld->uploadPath() . $file)));
+                            } else {
+                                $ar[$file] = FullUrl($fld->hrefPath() . $file);
+                            }
+                        }
+                    }
+                    $data[$fld->Param] = $ar;
+                    $response = $response->withJson($data);
+                }
+            }
+        }
         return $response;
     }
 

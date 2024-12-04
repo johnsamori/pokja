@@ -139,8 +139,6 @@ class SuppliersAdd extends Suppliers
         $this->address->setVisibility();
         $this->phone->setVisibility();
         $this->_email->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
     }
 
     // Constructor
@@ -701,28 +699,6 @@ class SuppliersAdd extends Suppliers
             }
         }
 
-        // Check field name 'created_at' before field var 'x_created_at'
-        $val = $this->hasFormValue("created_at") ? $this->getFormValue("created_at") : $this->getFormValue("x_created_at");
-        if (!$this->created_at->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->created_at->Visible = false; // Disable update for API request
-            } else {
-                $this->created_at->setFormValue($val, true, $validate);
-            }
-            $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        }
-
-        // Check field name 'updated_at' before field var 'x_updated_at'
-        $val = $this->hasFormValue("updated_at") ? $this->getFormValue("updated_at") : $this->getFormValue("x_updated_at");
-        if (!$this->updated_at->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->updated_at->Visible = false; // Disable update for API request
-            } else {
-                $this->updated_at->setFormValue($val, true, $validate);
-            }
-            $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
-        }
-
         // Check field name 'id' first before field var 'x_id'
         $val = $this->hasFormValue("id") ? $this->getFormValue("id") : $this->getFormValue("x_id");
     }
@@ -734,10 +710,6 @@ class SuppliersAdd extends Suppliers
         $this->address->CurrentValue = $this->address->FormValue;
         $this->phone->CurrentValue = $this->phone->FormValue;
         $this->_email->CurrentValue = $this->_email->FormValue;
-        $this->created_at->CurrentValue = $this->created_at->FormValue;
-        $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->updated_at->CurrentValue = $this->updated_at->FormValue;
-        $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
     }
 
     /**
@@ -782,8 +754,6 @@ class SuppliersAdd extends Suppliers
         $this->address->setDbValue($row['address']);
         $this->phone->setDbValue($row['phone']);
         $this->_email->setDbValue($row['email']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
     }
 
     // Return a row with default values
@@ -795,8 +765,6 @@ class SuppliersAdd extends Suppliers
         $row['address'] = $this->address->DefaultValue;
         $row['phone'] = $this->phone->DefaultValue;
         $row['email'] = $this->_email->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
         return $row;
     }
 
@@ -846,12 +814,6 @@ class SuppliersAdd extends Suppliers
         // email
         $this->_email->RowCssClass = "row";
 
-        // created_at
-        $this->created_at->RowCssClass = "row";
-
-        // updated_at
-        $this->updated_at->RowCssClass = "row";
-
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
@@ -869,14 +831,6 @@ class SuppliersAdd extends Suppliers
             // email
             $this->_email->ViewValue = $this->_email->CurrentValue;
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
-
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
-
             // name
             $this->name->HrefValue = "";
 
@@ -888,12 +842,6 @@ class SuppliersAdd extends Suppliers
 
             // email
             $this->_email->HrefValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // name
             $this->name->setupEditAttributes();
@@ -927,16 +875,6 @@ class SuppliersAdd extends Suppliers
             $this->_email->EditValue = HtmlEncode($this->_email->CurrentValue);
             $this->_email->PlaceHolder = RemoveHtml($this->_email->caption());
 
-            // created_at
-            $this->created_at->setupEditAttributes();
-            $this->created_at->EditValue = HtmlEncode(FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()));
-            $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
-
-            // updated_at
-            $this->updated_at->setupEditAttributes();
-            $this->updated_at->EditValue = HtmlEncode(FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()));
-            $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
-
             // Add refer script
 
             // name
@@ -950,12 +888,6 @@ class SuppliersAdd extends Suppliers
 
             // email
             $this->_email->HrefValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -994,22 +926,6 @@ class SuppliersAdd extends Suppliers
                 if (!$this->_email->IsDetailKey && IsEmpty($this->_email->FormValue)) {
                     $this->_email->addErrorMessage(str_replace("%s", $this->_email->caption(), $this->_email->RequiredErrorMessage));
                 }
-            }
-            if ($this->created_at->Visible && $this->created_at->Required) {
-                if (!$this->created_at->IsDetailKey && IsEmpty($this->created_at->FormValue)) {
-                    $this->created_at->addErrorMessage(str_replace("%s", $this->created_at->caption(), $this->created_at->RequiredErrorMessage));
-                }
-            }
-            if (!CheckDate($this->created_at->FormValue, $this->created_at->formatPattern())) {
-                $this->created_at->addErrorMessage($this->created_at->getErrorMessage(false));
-            }
-            if ($this->updated_at->Visible && $this->updated_at->Required) {
-                if (!$this->updated_at->IsDetailKey && IsEmpty($this->updated_at->FormValue)) {
-                    $this->updated_at->addErrorMessage(str_replace("%s", $this->updated_at->caption(), $this->updated_at->RequiredErrorMessage));
-                }
-            }
-            if (!CheckDate($this->updated_at->FormValue, $this->updated_at->formatPattern())) {
-                $this->updated_at->addErrorMessage($this->updated_at->getErrorMessage(false));
             }
 
         // Return validate result
@@ -1099,12 +1015,6 @@ class SuppliersAdd extends Suppliers
 
         // email
         $this->_email->setDbValueDef($newRow, $this->_email->CurrentValue, false);
-
-        // created_at
-        $this->created_at->setDbValueDef($newRow, UnFormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()), false);
-
-        // updated_at
-        $this->updated_at->setDbValueDef($newRow, UnFormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()), false);
         return $newRow;
     }
 

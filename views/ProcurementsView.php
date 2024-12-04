@@ -149,24 +149,24 @@ loadjs.ready("head", function () {
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-    <tr id="r_created_at"<?= $Page->created_at->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_procurements_created_at"><?= $Page->created_at->caption() ?></span></td>
-        <td data-name="created_at"<?= $Page->created_at->cellAttributes() ?>>
-<span id="el_procurements_created_at">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
+<?php if ($Page->ip->Visible) { // ip ?>
+    <tr id="r_ip"<?= $Page->ip->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_procurements_ip"><?= $Page->ip->caption() ?></span></td>
+        <td data-name="ip"<?= $Page->ip->cellAttributes() ?>>
+<span id="el_procurements_ip">
+<span<?= $Page->ip->viewAttributes() ?>>
+<?= $Page->ip->getViewValue() ?></span>
 </span>
 </td>
     </tr>
 <?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-    <tr id="r_updated_at"<?= $Page->updated_at->rowAttributes() ?>>
-        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_procurements_updated_at"><?= $Page->updated_at->caption() ?></span></td>
-        <td data-name="updated_at"<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el_procurements_updated_at">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
+<?php if ($Page->_username->Visible) { // username ?>
+    <tr id="r__username"<?= $Page->_username->rowAttributes() ?>>
+        <td class="<?= $Page->TableLeftColumnClass ?>"><span id="elh_procurements__username"><?= $Page->_username->caption() ?></span></td>
+        <td data-name="_username"<?= $Page->_username->cellAttributes() ?>>
+<span id="el_procurements__username">
+<span<?= $Page->_username->viewAttributes() ?>>
+<?= $Page->_username->getViewValue() ?></span>
 </span>
 </td>
     </tr>

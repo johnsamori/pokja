@@ -49,12 +49,6 @@ class Supplier extends AbstractEntity
     #[Column(name: "email", type: "string", unique: true, nullable: true)]
     private ?string $Email;
 
-    #[Column(name: "created_at", type: "datetime")]
-    private DateTime $CreatedAt;
-
-    #[Column(name: "updated_at", type: "datetime")]
-    private DateTime $UpdatedAt;
-
     public function getId(): int
     {
         return $this->Id;
@@ -107,28 +101,6 @@ class Supplier extends AbstractEntity
     public function setEmail(?string $value): static
     {
         $this->Email = RemoveXss($value);
-        return $this;
-    }
-
-    public function getCreatedAt(): DateTime
-    {
-        return $this->CreatedAt;
-    }
-
-    public function setCreatedAt(DateTime $value): static
-    {
-        $this->CreatedAt = $value;
-        return $this;
-    }
-
-    public function getUpdatedAt(): DateTime
-    {
-        return $this->UpdatedAt;
-    }
-
-    public function setUpdatedAt(DateTime $value): static
-    {
-        $this->UpdatedAt = $value;
         return $this;
     }
 }

@@ -140,8 +140,9 @@ class ItemsEdit extends Items
         $this->quantity->setVisibility();
         $this->unit->setVisibility();
         $this->price->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
+        $this->_userid->setVisibility();
+        $this->_username->setVisibility();
+        $this->ip->setVisibility();
     }
 
     // Constructor
@@ -808,26 +809,34 @@ class ItemsEdit extends Items
             }
         }
 
-        // Check field name 'created_at' before field var 'x_created_at'
-        $val = $this->hasFormValue("created_at") ? $this->getFormValue("created_at") : $this->getFormValue("x_created_at");
-        if (!$this->created_at->IsDetailKey) {
+        // Check field name 'userid' before field var 'x__userid'
+        $val = $this->hasFormValue("userid") ? $this->getFormValue("userid") : $this->getFormValue("x__userid");
+        if (!$this->_userid->IsDetailKey) {
             if (IsApi() && $val === null) {
-                $this->created_at->Visible = false; // Disable update for API request
+                $this->_userid->Visible = false; // Disable update for API request
             } else {
-                $this->created_at->setFormValue($val, true, $validate);
+                $this->_userid->setFormValue($val);
             }
-            $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
         }
 
-        // Check field name 'updated_at' before field var 'x_updated_at'
-        $val = $this->hasFormValue("updated_at") ? $this->getFormValue("updated_at") : $this->getFormValue("x_updated_at");
-        if (!$this->updated_at->IsDetailKey) {
+        // Check field name 'username' before field var 'x__username'
+        $val = $this->hasFormValue("username") ? $this->getFormValue("username") : $this->getFormValue("x__username");
+        if (!$this->_username->IsDetailKey) {
             if (IsApi() && $val === null) {
-                $this->updated_at->Visible = false; // Disable update for API request
+                $this->_username->Visible = false; // Disable update for API request
             } else {
-                $this->updated_at->setFormValue($val, true, $validate);
+                $this->_username->setFormValue($val);
             }
-            $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
+        }
+
+        // Check field name 'ip' before field var 'x_ip'
+        $val = $this->hasFormValue("ip") ? $this->getFormValue("ip") : $this->getFormValue("x_ip");
+        if (!$this->ip->IsDetailKey) {
+            if (IsApi() && $val === null) {
+                $this->ip->Visible = false; // Disable update for API request
+            } else {
+                $this->ip->setFormValue($val);
+            }
         }
     }
 
@@ -840,10 +849,9 @@ class ItemsEdit extends Items
         $this->quantity->CurrentValue = $this->quantity->FormValue;
         $this->unit->CurrentValue = $this->unit->FormValue;
         $this->price->CurrentValue = $this->price->FormValue;
-        $this->created_at->CurrentValue = $this->created_at->FormValue;
-        $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->updated_at->CurrentValue = $this->updated_at->FormValue;
-        $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
+        $this->_userid->CurrentValue = $this->_userid->FormValue;
+        $this->_username->CurrentValue = $this->_username->FormValue;
+        $this->ip->CurrentValue = $this->ip->FormValue;
     }
 
     /**
@@ -944,8 +952,9 @@ class ItemsEdit extends Items
         $this->quantity->setDbValue($row['quantity']);
         $this->unit->setDbValue($row['unit']);
         $this->price->setDbValue($row['price']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->_userid->setDbValue($row['userid']);
+        $this->_username->setDbValue($row['username']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -958,8 +967,9 @@ class ItemsEdit extends Items
         $row['quantity'] = $this->quantity->DefaultValue;
         $row['unit'] = $this->unit->DefaultValue;
         $row['price'] = $this->price->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['userid'] = $this->_userid->DefaultValue;
+        $row['username'] = $this->_username->DefaultValue;
+        $row['ip'] = $this->ip->DefaultValue;
         return $row;
     }
 
@@ -1012,11 +1022,14 @@ class ItemsEdit extends Items
         // price
         $this->price->RowCssClass = "row";
 
-        // created_at
-        $this->created_at->RowCssClass = "row";
+        // userid
+        $this->_userid->RowCssClass = "row";
 
-        // updated_at
-        $this->updated_at->RowCssClass = "row";
+        // username
+        $this->_username->RowCssClass = "row";
+
+        // ip
+        $this->ip->RowCssClass = "row";
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -1040,13 +1053,15 @@ class ItemsEdit extends Items
             $this->price->ViewValue = $this->price->CurrentValue;
             $this->price->ViewValue = FormatNumber($this->price->ViewValue, $this->price->formatPattern());
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+            // userid
+            $this->_userid->ViewValue = $this->_userid->CurrentValue;
+            $this->_userid->ViewValue = FormatNumber($this->_userid->ViewValue, $this->_userid->formatPattern());
 
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+            // username
+            $this->_username->ViewValue = $this->_username->CurrentValue;
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
 
             // id
             $this->id->HrefValue = "";
@@ -1066,11 +1081,14 @@ class ItemsEdit extends Items
             // price
             $this->price->HrefValue = "";
 
-            // created_at
-            $this->created_at->HrefValue = "";
+            // userid
+            $this->_userid->HrefValue = "";
 
-            // updated_at
-            $this->updated_at->HrefValue = "";
+            // username
+            $this->_username->HrefValue = "";
+
+            // ip
+            $this->ip->HrefValue = "";
         } elseif ($this->RowType == RowType::EDIT) {
             // id
             $this->id->setupEditAttributes();
@@ -1116,15 +1134,11 @@ class ItemsEdit extends Items
                 $this->price->EditValue = FormatNumber($this->price->EditValue, null);
             }
 
-            // created_at
-            $this->created_at->setupEditAttributes();
-            $this->created_at->EditValue = HtmlEncode(FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()));
-            $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
+            // userid
 
-            // updated_at
-            $this->updated_at->setupEditAttributes();
-            $this->updated_at->EditValue = HtmlEncode(FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()));
-            $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
+            // username
+
+            // ip
 
             // Edit refer script
 
@@ -1146,11 +1160,14 @@ class ItemsEdit extends Items
             // price
             $this->price->HrefValue = "";
 
-            // created_at
-            $this->created_at->HrefValue = "";
+            // userid
+            $this->_userid->HrefValue = "";
 
-            // updated_at
-            $this->updated_at->HrefValue = "";
+            // username
+            $this->_username->HrefValue = "";
+
+            // ip
+            $this->ip->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1206,21 +1223,20 @@ class ItemsEdit extends Items
             if (!CheckNumber($this->price->FormValue)) {
                 $this->price->addErrorMessage($this->price->getErrorMessage(false));
             }
-            if ($this->created_at->Visible && $this->created_at->Required) {
-                if (!$this->created_at->IsDetailKey && IsEmpty($this->created_at->FormValue)) {
-                    $this->created_at->addErrorMessage(str_replace("%s", $this->created_at->caption(), $this->created_at->RequiredErrorMessage));
+            if ($this->_userid->Visible && $this->_userid->Required) {
+                if (!$this->_userid->IsDetailKey && IsEmpty($this->_userid->FormValue)) {
+                    $this->_userid->addErrorMessage(str_replace("%s", $this->_userid->caption(), $this->_userid->RequiredErrorMessage));
                 }
             }
-            if (!CheckDate($this->created_at->FormValue, $this->created_at->formatPattern())) {
-                $this->created_at->addErrorMessage($this->created_at->getErrorMessage(false));
-            }
-            if ($this->updated_at->Visible && $this->updated_at->Required) {
-                if (!$this->updated_at->IsDetailKey && IsEmpty($this->updated_at->FormValue)) {
-                    $this->updated_at->addErrorMessage(str_replace("%s", $this->updated_at->caption(), $this->updated_at->RequiredErrorMessage));
+            if ($this->_username->Visible && $this->_username->Required) {
+                if (!$this->_username->IsDetailKey && IsEmpty($this->_username->FormValue)) {
+                    $this->_username->addErrorMessage(str_replace("%s", $this->_username->caption(), $this->_username->RequiredErrorMessage));
                 }
             }
-            if (!CheckDate($this->updated_at->FormValue, $this->updated_at->formatPattern())) {
-                $this->updated_at->addErrorMessage($this->updated_at->getErrorMessage(false));
+            if ($this->ip->Visible && $this->ip->Required) {
+                if (!$this->ip->IsDetailKey && IsEmpty($this->ip->FormValue)) {
+                    $this->ip->addErrorMessage(str_replace("%s", $this->ip->caption(), $this->ip->RequiredErrorMessage));
+                }
             }
 
         // Return validate result
@@ -1324,11 +1340,17 @@ class ItemsEdit extends Items
         // price
         $this->price->setDbValueDef($newRow, $this->price->CurrentValue, $this->price->ReadOnly);
 
-        // created_at
-        $this->created_at->setDbValueDef($newRow, UnFormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()), $this->created_at->ReadOnly);
+        // userid
+        $this->_userid->CurrentValue = $this->_userid->getAutoUpdateValue(); // PHP
+        $this->_userid->setDbValueDef($newRow, $this->_userid->CurrentValue, $this->_userid->ReadOnly);
 
-        // updated_at
-        $this->updated_at->setDbValueDef($newRow, UnFormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()), $this->updated_at->ReadOnly);
+        // username
+        $this->_username->CurrentValue = $this->_username->getAutoUpdateValue(); // PHP
+        $this->_username->setDbValueDef($newRow, $this->_username->CurrentValue, $this->_username->ReadOnly);
+
+        // ip
+        $this->ip->CurrentValue = $this->ip->getAutoUpdateValue(); // PHP
+        $this->ip->setDbValueDef($newRow, $this->ip->CurrentValue, $this->ip->ReadOnly);
         return $newRow;
     }
 
@@ -1353,11 +1375,14 @@ class ItemsEdit extends Items
         if (isset($row['price'])) { // price
             $this->price->CurrentValue = $row['price'];
         }
-        if (isset($row['created_at'])) { // created_at
-            $this->created_at->CurrentValue = $row['created_at'];
+        if (isset($row['userid'])) { // userid
+            $this->_userid->CurrentValue = $row['userid'];
         }
-        if (isset($row['updated_at'])) { // updated_at
-            $this->updated_at->CurrentValue = $row['updated_at'];
+        if (isset($row['username'])) { // username
+            $this->_username->CurrentValue = $row['username'];
+        }
+        if (isset($row['ip'])) { // ip
+            $this->ip->CurrentValue = $row['ip'];
         }
     }
 

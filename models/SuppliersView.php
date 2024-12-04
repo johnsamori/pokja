@@ -156,8 +156,6 @@ class SuppliersView extends Suppliers
         $this->address->setVisibility();
         $this->phone->setVisibility();
         $this->_email->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
     }
 
     // Constructor
@@ -859,8 +857,6 @@ class SuppliersView extends Suppliers
         $this->address->setDbValue($row['address']);
         $this->phone->setDbValue($row['phone']);
         $this->_email->setDbValue($row['email']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
     }
 
     // Return a row with default values
@@ -872,8 +868,6 @@ class SuppliersView extends Suppliers
         $row['address'] = $this->address->DefaultValue;
         $row['phone'] = $this->phone->DefaultValue;
         $row['email'] = $this->_email->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
         return $row;
     }
 
@@ -905,10 +899,6 @@ class SuppliersView extends Suppliers
 
         // email
 
-        // created_at
-
-        // updated_at
-
         // View row
         if ($this->RowType == RowType::VIEW) {
             // id
@@ -925,14 +915,6 @@ class SuppliersView extends Suppliers
 
             // email
             $this->_email->ViewValue = $this->_email->CurrentValue;
-
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
-
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
 
             // id
             $this->id->HrefValue = "";
@@ -953,14 +935,6 @@ class SuppliersView extends Suppliers
             // email
             $this->_email->HrefValue = "";
             $this->_email->TooltipValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-            $this->created_at->TooltipValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
-            $this->updated_at->TooltipValue = "";
         }
 
         // Call Row Rendered event

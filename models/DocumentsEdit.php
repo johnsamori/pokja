@@ -745,6 +745,9 @@ class DocumentsEdit extends Documents
 // Get upload files
     protected function getUploadFiles(): void
     {
+        $this->file_name->Upload->Index = $this->FormIndex;
+        $this->file_name->Upload->uploadFile();
+        $this->file_name->CurrentValue = $this->file_name->Upload->FileName;
     }
 
     // Load form values
@@ -768,16 +771,6 @@ class DocumentsEdit extends Documents
             }
         }
 
-        // Check field name 'file_name' before field var 'x_file_name'
-        $val = $this->hasFormValue("file_name") ? $this->getFormValue("file_name") : $this->getFormValue("x_file_name");
-        if (!$this->file_name->IsDetailKey) {
-            if (IsApi() && $val === null) {
-                $this->file_name->Visible = false; // Disable update for API request
-            } else {
-                $this->file_name->setFormValue($val);
-            }
-        }
-
         // Check field name 'file_path' before field var 'x_file_path'
         $val = $this->hasFormValue("file_path") ? $this->getFormValue("file_path") : $this->getFormValue("x_file_path");
         if (!$this->file_path->IsDetailKey) {
@@ -798,6 +791,7 @@ class DocumentsEdit extends Documents
             }
             $this->uploaded_at->CurrentValue = UnformatDateTime($this->uploaded_at->CurrentValue, $this->uploaded_at->formatPattern());
         }
+        $this->getUploadFiles(); // Get upload files
     }
 
     // Restore form values
@@ -805,7 +799,6 @@ class DocumentsEdit extends Documents
     {
         $this->id->CurrentValue = $this->id->FormValue;
         $this->procurement_id->CurrentValue = $this->procurement_id->FormValue;
-        $this->file_name->CurrentValue = $this->file_name->FormValue;
         $this->file_path->CurrentValue = $this->file_path->FormValue;
         $this->uploaded_at->CurrentValue = $this->uploaded_at->FormValue;
         $this->uploaded_at->CurrentValue = UnformatDateTime($this->uploaded_at->CurrentValue, $this->uploaded_at->formatPattern());
@@ -905,7 +898,8 @@ class DocumentsEdit extends Documents
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
         $this->procurement_id->setDbValue($row['procurement_id']);
-        $this->file_name->setDbValue($row['file_name']);
+        $this->file_name->Upload->DbValue = $row['file_name'];
+        $this->file_name->setDbValue($this->file_name->Upload->DbValue);
         $this->file_path->setDbValue($row['file_path']);
         $this->uploaded_at->setDbValue($row['uploaded_at']);
     }
@@ -995,7 +989,11 @@ class DocumentsEdit extends Documents
             }
 
             // file_name
-            $this->file_name->ViewValue = $this->file_name->CurrentValue;
+            if (!IsEmpty($this->file_name->Upload->DbValue)) {
+                $this->file_name->ViewValue = $this->file_name->Upload->DbValue;
+            } else {
+                $this->file_name->ViewValue = "";
+            }
 
             // file_path
             $this->file_path->ViewValue = $this->file_path->CurrentValue;
@@ -1012,6 +1010,7 @@ class DocumentsEdit extends Documents
 
             // file_name
             $this->file_name->HrefValue = "";
+            $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
 
             // file_path
             $this->file_path->HrefValue = "";
@@ -1050,11 +1049,17 @@ class DocumentsEdit extends Documents
 
             // file_name
             $this->file_name->setupEditAttributes();
-            if (!$this->file_name->Raw) {
-                $this->file_name->CurrentValue = HtmlDecode($this->file_name->CurrentValue);
+            if (!IsEmpty($this->file_name->Upload->DbValue)) {
+                $this->file_name->EditValue = $this->file_name->Upload->DbValue;
+            } else {
+                $this->file_name->EditValue = "";
             }
-            $this->file_name->EditValue = HtmlEncode($this->file_name->CurrentValue);
-            $this->file_name->PlaceHolder = RemoveHtml($this->file_name->caption());
+            if (!IsEmpty($this->file_name->CurrentValue)) {
+                $this->file_name->Upload->FileName = $this->file_name->CurrentValue;
+            }
+            if ($this->isShow()) {
+                $this->file_name->Upload->setupTempDirectory();
+            }
 
             // file_path
             $this->file_path->setupEditAttributes();
@@ -1079,6 +1084,7 @@ class DocumentsEdit extends Documents
 
             // file_name
             $this->file_name->HrefValue = "";
+            $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
 
             // file_path
             $this->file_path->HrefValue = "";
@@ -1115,7 +1121,7 @@ class DocumentsEdit extends Documents
                 }
             }
             if ($this->file_name->Visible && $this->file_name->Required) {
-                if (!$this->file_name->IsDetailKey && IsEmpty($this->file_name->FormValue)) {
+                if ($this->file_name->Upload->FileName == "" && !$this->file_name->Upload->KeepFile) {
                     $this->file_name->addErrorMessage(str_replace("%s", $this->file_name->caption(), $this->file_name->RequiredErrorMessage));
                 }
             }
@@ -1169,6 +1175,12 @@ class DocumentsEdit extends Documents
 
         // Update current values
         $this->Fields->setCurrentValues($newRow);
+        if ($this->file_name->Visible && !$this->file_name->Upload->KeepFile) {
+            if (!IsEmpty($this->file_name->Upload->FileName)) {
+                FixUploadFileNames($this->file_name);
+                $this->file_name->setDbValueDef($newRow, $this->file_name->Upload->FileName, $this->file_name->ReadOnly);
+            }
+        }
 
         // Call Row Updating event
         $updateRow = $this->rowUpdating($oldRow, $newRow);
@@ -1183,6 +1195,12 @@ class DocumentsEdit extends Documents
                 $editRow = true; // No field to update
             }
             if ($editRow) {
+                if ($this->file_name->Visible && !$this->file_name->Upload->KeepFile) {
+                    if (!SaveUploadFiles($this->file_name, $newRow['file_name'], false)) {
+                        $this->setFailureMessage($this->language->phrase("UploadError7"));
+                        return false;
+                    }
+                }
             }
         } else {
             if ($this->peekSuccessMessage() || $this->peekFailureMessage()) {
@@ -1223,7 +1241,14 @@ class DocumentsEdit extends Documents
         $this->procurement_id->setDbValueDef($newRow, $this->procurement_id->CurrentValue, $this->procurement_id->ReadOnly);
 
         // file_name
-        $this->file_name->setDbValueDef($newRow, $this->file_name->CurrentValue, $this->file_name->ReadOnly);
+        if ($this->file_name->Visible && !$this->file_name->ReadOnly && !$this->file_name->Upload->KeepFile) {
+            if ($this->file_name->Upload->FileName == "") {
+                $newRow['file_name'] = null;
+            } else {
+                FixUploadTempFileNames($this->file_name);
+                $newRow['file_name'] = $this->file_name->Upload->FileName;
+            }
+        }
 
         // file_path
         $this->file_path->setDbValueDef($newRow, $this->file_path->CurrentValue, $this->file_path->ReadOnly);

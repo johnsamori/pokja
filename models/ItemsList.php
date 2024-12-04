@@ -161,8 +161,9 @@ class ItemsList extends Items
         $this->quantity->setVisibility();
         $this->unit->setVisibility();
         $this->price->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
+        $this->_userid->Visible = false;
+        $this->_username->Visible = false;
+        $this->ip->Visible = false;
     }
 
     // Constructor
@@ -447,6 +448,15 @@ class ItemsList extends Items
     {
         if ($this->isAdd() || $this->isCopy() || $this->isGridAdd()) {
             $this->id->Visible = false;
+        }
+        if ($this->isAddOrEdit()) {
+            $this->_userid->Visible = false;
+        }
+        if ($this->isAddOrEdit()) {
+            $this->_username->Visible = false;
+        }
+        if ($this->isAddOrEdit()) {
+            $this->ip->Visible = false;
         }
     }
 
@@ -1067,8 +1077,9 @@ class ItemsList extends Items
         $filterList = Concat($filterList, $this->quantity->AdvancedSearch->toJson(), ","); // Field quantity
         $filterList = Concat($filterList, $this->unit->AdvancedSearch->toJson(), ","); // Field unit
         $filterList = Concat($filterList, $this->price->AdvancedSearch->toJson(), ","); // Field price
-        $filterList = Concat($filterList, $this->created_at->AdvancedSearch->toJson(), ","); // Field created_at
-        $filterList = Concat($filterList, $this->updated_at->AdvancedSearch->toJson(), ","); // Field updated_at
+        $filterList = Concat($filterList, $this->_userid->AdvancedSearch->toJson(), ","); // Field userid
+        $filterList = Concat($filterList, $this->_username->AdvancedSearch->toJson(), ","); // Field username
+        $filterList = Concat($filterList, $this->ip->AdvancedSearch->toJson(), ","); // Field ip
         if ($this->BasicSearch->Keyword != "") {
             $wrk = "\"" . Config("TABLE_BASIC_SEARCH") . "\":\"" . JsEncode($this->BasicSearch->Keyword) . "\",\"" . Config("TABLE_BASIC_SEARCH_TYPE") . "\":\"" . JsEncode($this->BasicSearch->Type) . "\"";
             $filterList = Concat($filterList, $wrk, ",");
@@ -1156,21 +1167,29 @@ class ItemsList extends Items
         $this->price->AdvancedSearch->SearchOperator2 = $filter["w_price"] ?? "";
         $this->price->AdvancedSearch->save();
 
-        // Field created_at
-        $this->created_at->AdvancedSearch->SearchValue = $filter["x_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchOperator = $filter["z_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchCondition = $filter["v_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchValue2 = $filter["y_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->SearchOperator2 = $filter["w_created_at"] ?? "";
-        $this->created_at->AdvancedSearch->save();
+        // Field userid
+        $this->_userid->AdvancedSearch->SearchValue = $filter["x__userid"] ?? "";
+        $this->_userid->AdvancedSearch->SearchOperator = $filter["z__userid"] ?? "";
+        $this->_userid->AdvancedSearch->SearchCondition = $filter["v__userid"] ?? "";
+        $this->_userid->AdvancedSearch->SearchValue2 = $filter["y__userid"] ?? "";
+        $this->_userid->AdvancedSearch->SearchOperator2 = $filter["w__userid"] ?? "";
+        $this->_userid->AdvancedSearch->save();
 
-        // Field updated_at
-        $this->updated_at->AdvancedSearch->SearchValue = $filter["x_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchOperator = $filter["z_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchCondition = $filter["v_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchValue2 = $filter["y_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->SearchOperator2 = $filter["w_updated_at"] ?? "";
-        $this->updated_at->AdvancedSearch->save();
+        // Field username
+        $this->_username->AdvancedSearch->SearchValue = $filter["x__username"] ?? "";
+        $this->_username->AdvancedSearch->SearchOperator = $filter["z__username"] ?? "";
+        $this->_username->AdvancedSearch->SearchCondition = $filter["v__username"] ?? "";
+        $this->_username->AdvancedSearch->SearchValue2 = $filter["y__username"] ?? "";
+        $this->_username->AdvancedSearch->SearchOperator2 = $filter["w__username"] ?? "";
+        $this->_username->AdvancedSearch->save();
+
+        // Field ip
+        $this->ip->AdvancedSearch->SearchValue = $filter["x_ip"] ?? "";
+        $this->ip->AdvancedSearch->SearchOperator = $filter["z_ip"] ?? "";
+        $this->ip->AdvancedSearch->SearchCondition = $filter["v_ip"] ?? "";
+        $this->ip->AdvancedSearch->SearchValue2 = $filter["y_ip"] ?? "";
+        $this->ip->AdvancedSearch->SearchOperator2 = $filter["w_ip"] ?? "";
+        $this->ip->AdvancedSearch->save();
         $this->BasicSearch->setKeyword($filter[Config("TABLE_BASIC_SEARCH")] ?? "");
         $this->BasicSearch->setType($filter[Config("TABLE_BASIC_SEARCH_TYPE")] ?? "");
     }
@@ -1210,6 +1229,8 @@ class ItemsList extends Items
         $searchFlds[] = &$this->name;
         $searchFlds[] = &$this->description;
         $searchFlds[] = &$this->unit;
+        $searchFlds[] = &$this->_username;
+        $searchFlds[] = &$this->ip;
         $searchKeyword = $default ? $this->BasicSearch->KeywordDefault : $this->BasicSearch->Keyword;
         $searchType = $default ? $this->BasicSearch->TypeDefault : $this->BasicSearch->Type;
 
@@ -1291,8 +1312,6 @@ class ItemsList extends Items
             $this->updateSort($this->quantity); // quantity
             $this->updateSort($this->unit); // unit
             $this->updateSort($this->price); // price
-            $this->updateSort($this->created_at); // created_at
-            $this->updateSort($this->updated_at); // updated_at
             $this->setStartRecordNumber(1); // Reset start position
         }
 
@@ -1323,8 +1342,9 @@ class ItemsList extends Items
                 $this->quantity->setSort("");
                 $this->unit->setSort("");
                 $this->price->setSort("");
-                $this->created_at->setSort("");
-                $this->updated_at->setSort("");
+                $this->_userid->setSort("");
+                $this->_username->setSort("");
+                $this->ip->setSort("");
             }
 
             // Reset start position
@@ -1541,8 +1561,6 @@ class ItemsList extends Items
             $this->createColumnOption($option, "quantity");
             $this->createColumnOption($option, "unit");
             $this->createColumnOption($option, "price");
-            $this->createColumnOption($option, "created_at");
-            $this->createColumnOption($option, "updated_at");
         }
 
         // Set up custom actions
@@ -1985,8 +2003,9 @@ class ItemsList extends Items
         $this->quantity->setDbValue($row['quantity']);
         $this->unit->setDbValue($row['unit']);
         $this->price->setDbValue($row['price']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->_userid->setDbValue($row['userid']);
+        $this->_username->setDbValue($row['username']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -1999,8 +2018,9 @@ class ItemsList extends Items
         $row['quantity'] = $this->quantity->DefaultValue;
         $row['unit'] = $this->unit->DefaultValue;
         $row['price'] = $this->price->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['userid'] = $this->_userid->DefaultValue;
+        $row['username'] = $this->_username->DefaultValue;
+        $row['ip'] = $this->ip->DefaultValue;
         return $row;
     }
 
@@ -2053,9 +2073,11 @@ class ItemsList extends Items
 
         // price
 
-        // created_at
+        // userid
 
-        // updated_at
+        // username
+
+        // ip
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -2079,13 +2101,15 @@ class ItemsList extends Items
             $this->price->ViewValue = $this->price->CurrentValue;
             $this->price->ViewValue = FormatNumber($this->price->ViewValue, $this->price->formatPattern());
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+            // userid
+            $this->_userid->ViewValue = $this->_userid->CurrentValue;
+            $this->_userid->ViewValue = FormatNumber($this->_userid->ViewValue, $this->_userid->formatPattern());
 
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+            // username
+            $this->_username->ViewValue = $this->_username->CurrentValue;
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
 
             // id
             $this->id->HrefValue = "";
@@ -2110,14 +2134,6 @@ class ItemsList extends Items
             // price
             $this->price->HrefValue = "";
             $this->price->TooltipValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-            $this->created_at->TooltipValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
-            $this->updated_at->TooltipValue = "";
         }
 
         // Call Row Rendered event

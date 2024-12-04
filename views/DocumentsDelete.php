@@ -106,7 +106,8 @@ while ($Page->fetch()) {
         <td<?= $Page->file_name->cellAttributes() ?>>
 <span id="">
 <span<?= $Page->file_name->viewAttributes() ?>>
-<?= $Page->file_name->getViewValue() ?></span>
+<?= GetFileViewTag($Page->file_name, $Page->file_name->getViewValue(), false) ?>
+</span>
 </span>
 </td>
 <?php } ?>

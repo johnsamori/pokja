@@ -141,8 +141,8 @@ class ProcurementsAdd extends Procurements
         $this->status->setVisibility();
         $this->total_price->setVisibility();
         $this->procurement_date->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
+        $this->ip->setVisibility();
+        $this->_username->setVisibility();
     }
 
     // Constructor
@@ -696,7 +696,7 @@ class ProcurementsAdd extends Procurements
             if (IsApi() && $val === null) {
                 $this->user_id->Visible = false; // Disable update for API request
             } else {
-                $this->user_id->setFormValue($val, true, $validate);
+                $this->user_id->setFormValue($val);
             }
         }
 
@@ -731,26 +731,24 @@ class ProcurementsAdd extends Procurements
             $this->procurement_date->CurrentValue = UnformatDateTime($this->procurement_date->CurrentValue, $this->procurement_date->formatPattern());
         }
 
-        // Check field name 'created_at' before field var 'x_created_at'
-        $val = $this->hasFormValue("created_at") ? $this->getFormValue("created_at") : $this->getFormValue("x_created_at");
-        if (!$this->created_at->IsDetailKey) {
+        // Check field name 'ip' before field var 'x_ip'
+        $val = $this->hasFormValue("ip") ? $this->getFormValue("ip") : $this->getFormValue("x_ip");
+        if (!$this->ip->IsDetailKey) {
             if (IsApi() && $val === null) {
-                $this->created_at->Visible = false; // Disable update for API request
+                $this->ip->Visible = false; // Disable update for API request
             } else {
-                $this->created_at->setFormValue($val, true, $validate);
+                $this->ip->setFormValue($val);
             }
-            $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
         }
 
-        // Check field name 'updated_at' before field var 'x_updated_at'
-        $val = $this->hasFormValue("updated_at") ? $this->getFormValue("updated_at") : $this->getFormValue("x_updated_at");
-        if (!$this->updated_at->IsDetailKey) {
+        // Check field name 'username' before field var 'x__username'
+        $val = $this->hasFormValue("username") ? $this->getFormValue("username") : $this->getFormValue("x__username");
+        if (!$this->_username->IsDetailKey) {
             if (IsApi() && $val === null) {
-                $this->updated_at->Visible = false; // Disable update for API request
+                $this->_username->Visible = false; // Disable update for API request
             } else {
-                $this->updated_at->setFormValue($val, true, $validate);
+                $this->_username->setFormValue($val);
             }
-            $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
         }
 
         // Check field name 'id' first before field var 'x_id'
@@ -767,10 +765,8 @@ class ProcurementsAdd extends Procurements
         $this->total_price->CurrentValue = $this->total_price->FormValue;
         $this->procurement_date->CurrentValue = $this->procurement_date->FormValue;
         $this->procurement_date->CurrentValue = UnformatDateTime($this->procurement_date->CurrentValue, $this->procurement_date->formatPattern());
-        $this->created_at->CurrentValue = $this->created_at->FormValue;
-        $this->created_at->CurrentValue = UnformatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->updated_at->CurrentValue = $this->updated_at->FormValue;
-        $this->updated_at->CurrentValue = UnformatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
+        $this->ip->CurrentValue = $this->ip->FormValue;
+        $this->_username->CurrentValue = $this->_username->FormValue;
     }
 
     /**
@@ -817,8 +813,8 @@ class ProcurementsAdd extends Procurements
         $this->status->setDbValue($row['status']);
         $this->total_price->setDbValue($row['total_price']);
         $this->procurement_date->setDbValue($row['procurement_date']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->ip->setDbValue($row['ip']);
+        $this->_username->setDbValue($row['username']);
     }
 
     // Return a row with default values
@@ -832,8 +828,8 @@ class ProcurementsAdd extends Procurements
         $row['status'] = $this->status->DefaultValue;
         $row['total_price'] = $this->total_price->DefaultValue;
         $row['procurement_date'] = $this->procurement_date->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['ip'] = $this->ip->DefaultValue;
+        $row['username'] = $this->_username->DefaultValue;
         return $row;
     }
 
@@ -889,11 +885,11 @@ class ProcurementsAdd extends Procurements
         // procurement_date
         $this->procurement_date->RowCssClass = "row";
 
-        // created_at
-        $this->created_at->RowCssClass = "row";
+        // ip
+        $this->ip->RowCssClass = "row";
 
-        // updated_at
-        $this->updated_at->RowCssClass = "row";
+        // username
+        $this->_username->RowCssClass = "row";
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -961,13 +957,11 @@ class ProcurementsAdd extends Procurements
             $this->procurement_date->ViewValue = $this->procurement_date->CurrentValue;
             $this->procurement_date->ViewValue = FormatDateTime($this->procurement_date->ViewValue, $this->procurement_date->formatPattern());
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
 
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+            // username
+            $this->_username->ViewValue = $this->_username->CurrentValue;
 
             // item_id
             $this->item_id->HrefValue = "";
@@ -987,11 +981,11 @@ class ProcurementsAdd extends Procurements
             // procurement_date
             $this->procurement_date->HrefValue = "";
 
-            // created_at
-            $this->created_at->HrefValue = "";
+            // ip
+            $this->ip->HrefValue = "";
 
-            // updated_at
-            $this->updated_at->HrefValue = "";
+            // username
+            $this->_username->HrefValue = "";
         } elseif ($this->RowType == RowType::ADD) {
             // item_id
             $this->item_id->setupEditAttributes();
@@ -1044,12 +1038,6 @@ class ProcurementsAdd extends Procurements
             $this->supplier_id->PlaceHolder = RemoveHtml($this->supplier_id->caption());
 
             // user_id
-            $this->user_id->setupEditAttributes();
-            $this->user_id->EditValue = $this->user_id->CurrentValue;
-            $this->user_id->PlaceHolder = RemoveHtml($this->user_id->caption());
-            if (strval($this->user_id->EditValue) != "" && is_numeric($this->user_id->EditValue)) {
-                $this->user_id->EditValue = FormatNumber($this->user_id->EditValue, null);
-            }
 
             // status
             $this->status->EditValue = $this->status->options(false);
@@ -1068,15 +1056,9 @@ class ProcurementsAdd extends Procurements
             $this->procurement_date->EditValue = HtmlEncode(FormatDateTime($this->procurement_date->CurrentValue, $this->procurement_date->formatPattern()));
             $this->procurement_date->PlaceHolder = RemoveHtml($this->procurement_date->caption());
 
-            // created_at
-            $this->created_at->setupEditAttributes();
-            $this->created_at->EditValue = HtmlEncode(FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()));
-            $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
+            // ip
 
-            // updated_at
-            $this->updated_at->setupEditAttributes();
-            $this->updated_at->EditValue = HtmlEncode(FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()));
-            $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
+            // username
 
             // Add refer script
 
@@ -1098,11 +1080,11 @@ class ProcurementsAdd extends Procurements
             // procurement_date
             $this->procurement_date->HrefValue = "";
 
-            // created_at
-            $this->created_at->HrefValue = "";
+            // ip
+            $this->ip->HrefValue = "";
 
-            // updated_at
-            $this->updated_at->HrefValue = "";
+            // username
+            $this->_username->HrefValue = "";
         }
         if ($this->RowType == RowType::ADD || $this->RowType == RowType::EDIT || $this->RowType == RowType::SEARCH) { // Add/Edit/Search row
             $this->setupFieldTitles();
@@ -1137,9 +1119,6 @@ class ProcurementsAdd extends Procurements
                     $this->user_id->addErrorMessage(str_replace("%s", $this->user_id->caption(), $this->user_id->RequiredErrorMessage));
                 }
             }
-            if (!CheckInteger($this->user_id->FormValue)) {
-                $this->user_id->addErrorMessage($this->user_id->getErrorMessage(false));
-            }
             if ($this->status->Visible && $this->status->Required) {
                 if ($this->status->FormValue == "") {
                     $this->status->addErrorMessage(str_replace("%s", $this->status->caption(), $this->status->RequiredErrorMessage));
@@ -1161,21 +1140,15 @@ class ProcurementsAdd extends Procurements
             if (!CheckDate($this->procurement_date->FormValue, $this->procurement_date->formatPattern())) {
                 $this->procurement_date->addErrorMessage($this->procurement_date->getErrorMessage(false));
             }
-            if ($this->created_at->Visible && $this->created_at->Required) {
-                if (!$this->created_at->IsDetailKey && IsEmpty($this->created_at->FormValue)) {
-                    $this->created_at->addErrorMessage(str_replace("%s", $this->created_at->caption(), $this->created_at->RequiredErrorMessage));
+            if ($this->ip->Visible && $this->ip->Required) {
+                if (!$this->ip->IsDetailKey && IsEmpty($this->ip->FormValue)) {
+                    $this->ip->addErrorMessage(str_replace("%s", $this->ip->caption(), $this->ip->RequiredErrorMessage));
                 }
             }
-            if (!CheckDate($this->created_at->FormValue, $this->created_at->formatPattern())) {
-                $this->created_at->addErrorMessage($this->created_at->getErrorMessage(false));
-            }
-            if ($this->updated_at->Visible && $this->updated_at->Required) {
-                if (!$this->updated_at->IsDetailKey && IsEmpty($this->updated_at->FormValue)) {
-                    $this->updated_at->addErrorMessage(str_replace("%s", $this->updated_at->caption(), $this->updated_at->RequiredErrorMessage));
+            if ($this->_username->Visible && $this->_username->Required) {
+                if (!$this->_username->IsDetailKey && IsEmpty($this->_username->FormValue)) {
+                    $this->_username->addErrorMessage(str_replace("%s", $this->_username->caption(), $this->_username->RequiredErrorMessage));
                 }
-            }
-            if (!CheckDate($this->updated_at->FormValue, $this->updated_at->formatPattern())) {
-                $this->updated_at->addErrorMessage($this->updated_at->getErrorMessage(false));
             }
 
         // Return validate result
@@ -1252,6 +1225,7 @@ class ProcurementsAdd extends Procurements
         $this->supplier_id->setDbValueDef($newRow, $this->supplier_id->CurrentValue, false);
 
         // user_id
+        $this->user_id->CurrentValue = $this->user_id->getAutoUpdateValue(); // PHP
         $this->user_id->setDbValueDef($newRow, $this->user_id->CurrentValue, false);
 
         // status
@@ -1263,11 +1237,13 @@ class ProcurementsAdd extends Procurements
         // procurement_date
         $this->procurement_date->setDbValueDef($newRow, UnFormatDateTime($this->procurement_date->CurrentValue, $this->procurement_date->formatPattern()), false);
 
-        // created_at
-        $this->created_at->setDbValueDef($newRow, UnFormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern()), false);
+        // ip
+        $this->ip->CurrentValue = $this->ip->getAutoUpdateValue(); // PHP
+        $this->ip->setDbValueDef($newRow, $this->ip->CurrentValue, false);
 
-        // updated_at
-        $this->updated_at->setDbValueDef($newRow, UnFormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern()), false);
+        // username
+        $this->_username->CurrentValue = $this->_username->getAutoUpdateValue(); // PHP
+        $this->_username->setDbValueDef($newRow, $this->_username->CurrentValue, false);
         return $newRow;
     }
 

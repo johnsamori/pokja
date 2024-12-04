@@ -59,9 +59,6 @@ $Page->showMessage();
 <?php if ($Page->supplier_id->Visible) { // supplier_id ?>
         <th class="<?= $Page->supplier_id->headerCellClass() ?>"><span id="elh_procurements_supplier_id" class="procurements_supplier_id"><?= $Page->supplier_id->caption() ?></span></th>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <th class="<?= $Page->user_id->headerCellClass() ?>"><span id="elh_procurements_user_id" class="procurements_user_id"><?= $Page->user_id->caption() ?></span></th>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <th class="<?= $Page->status->headerCellClass() ?>"><span id="elh_procurements_status" class="procurements_status"><?= $Page->status->caption() ?></span></th>
 <?php } ?>
@@ -70,12 +67,6 @@ $Page->showMessage();
 <?php } ?>
 <?php if ($Page->procurement_date->Visible) { // procurement_date ?>
         <th class="<?= $Page->procurement_date->headerCellClass() ?>"><span id="elh_procurements_procurement_date" class="procurements_procurement_date"><?= $Page->procurement_date->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <th class="<?= $Page->created_at->headerCellClass() ?>"><span id="elh_procurements_created_at" class="procurements_created_at"><?= $Page->created_at->caption() ?></span></th>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <th class="<?= $Page->updated_at->headerCellClass() ?>"><span id="elh_procurements_updated_at" class="procurements_updated_at"><?= $Page->updated_at->caption() ?></span></th>
 <?php } ?>
     </tr>
     </thead>
@@ -122,14 +113,6 @@ while ($Page->fetch()) {
 </span>
 </td>
 <?php } ?>
-<?php if ($Page->user_id->Visible) { // user_id ?>
-        <td<?= $Page->user_id->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->user_id->viewAttributes() ?>>
-<?= $Page->user_id->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
 <?php if ($Page->status->Visible) { // status ?>
         <td<?= $Page->status->cellAttributes() ?>>
 <span id="">
@@ -151,22 +134,6 @@ while ($Page->fetch()) {
 <span id="">
 <span<?= $Page->procurement_date->viewAttributes() ?>>
 <?= $Page->procurement_date->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-        <td<?= $Page->created_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->created_at->viewAttributes() ?>>
-<?= $Page->created_at->getViewValue() ?></span>
-</span>
-</td>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-        <td<?= $Page->updated_at->cellAttributes() ?>>
-<span id="">
-<span<?= $Page->updated_at->viewAttributes() ?>>
-<?= $Page->updated_at->getViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

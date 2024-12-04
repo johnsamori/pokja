@@ -49,7 +49,7 @@ loadjs.ready(["wrapper", "head"], function () {
         .setFields([
             ["id", [fields.id.visible && fields.id.required ? ew.Validators.required(fields.id.caption) : null], fields.id.isInvalid],
             ["procurement_id", [fields.procurement_id.visible && fields.procurement_id.required ? ew.Validators.required(fields.procurement_id.caption) : null], fields.procurement_id.isInvalid],
-            ["file_name", [fields.file_name.visible && fields.file_name.required ? ew.Validators.required(fields.file_name.caption) : null], fields.file_name.isInvalid],
+            ["file_name", [fields.file_name.visible && fields.file_name.required ? ew.Validators.fileRequired(fields.file_name.caption) : null], fields.file_name.isInvalid],
             ["file_path", [fields.file_path.visible && fields.file_path.required ? ew.Validators.required(fields.file_path.caption) : null], fields.file_path.isInvalid],
             ["uploaded_at", [fields.uploaded_at.visible && fields.uploaded_at.required ? ew.Validators.required(fields.uploaded_at.caption) : null, ew.Validators.datetime(fields.uploaded_at.clientFormatPattern)], fields.uploaded_at.isInvalid]
         ])
@@ -152,12 +152,35 @@ loadjs.ready("fdocumentsedit", function() {
 <?php } ?>
 <?php if ($Page->file_name->Visible) { // file_name ?>
     <div id="r_file_name"<?= $Page->file_name->rowAttributes() ?>>
-        <label id="elh_documents_file_name" for="x_file_name" class="<?= $Page->LeftColumnClass ?>"><?= $Page->file_name->caption() ?><?= $Page->file_name->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
+        <label id="elh_documents_file_name" class="<?= $Page->LeftColumnClass ?>"><?= $Page->file_name->caption() ?><?= $Page->file_name->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
         <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->file_name->cellAttributes() ?>>
 <span id="el_documents_file_name">
-<input type="<?= $Page->file_name->getInputTextType() ?>" name="x_file_name" id="x_file_name" data-table="documents" data-field="x_file_name" value="<?= $Page->file_name->EditValue ?>" size="30" maxlength="255" placeholder="<?= HtmlEncode($Page->file_name->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->file_name->formatPattern()) ?>"<?= $Page->file_name->editAttributes() ?> aria-describedby="x_file_name_help">
-<?= $Page->file_name->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->file_name->getErrorMessage() ?></div>
+<div id="fd_x_file_name" class="fileinput-button ew-file-drop-zone">
+    <input
+        type="file"
+        id="x_file_name"
+        name="x_file_name"
+        class="form-control ew-file-input"
+        title="<?= $Page->file_name->title() ?>"
+        lang="<?= CurrentLanguageID() ?>"
+        data-table="documents"
+        data-field="x_file_name"
+        data-size="255"
+        data-accept-file-types="<?= $Page->file_name->acceptFileTypes() ?>"
+        data-max-file-size="<?= $Page->file_name->UploadMaxFileSize ?>"
+        data-max-number-of-files="null"
+        data-disable-image-crop="<?= $Page->file_name->ImageCropper ? 0 : 1 ?>"
+        aria-describedby="x_file_name_help"
+        <?= ($Page->file_name->ReadOnly || $Page->file_name->Disabled) ? " disabled" : "" ?>
+        <?= $Page->file_name->editAttributes() ?>
+    >
+    <div class="text-body-secondary ew-file-text"><?= $Language->phrase("ChooseFile") ?></div>
+    <?= $Page->file_name->getCustomMessage() ?>
+    <div class="invalid-feedback"><?= $Page->file_name->getErrorMessage() ?></div>
+</div>
+<input type="hidden" name="fn_x_file_name" id= "fn_x_file_name" value="<?= $Page->file_name->Upload->FileName ?>">
+<input type="hidden" name="fa_x_file_name" id= "fa_x_file_name" value="<?= (Post("fa_x_file_name") == "0") ? "0" : "1" ?>">
+<table id="ft_x_file_name" class="table table-sm float-start ew-upload-table"><tbody class="files"></tbody></table>
 </span>
 </div></div>
     </div>

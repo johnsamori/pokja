@@ -1944,7 +1944,8 @@ class DocumentsList extends Documents
         $this->rowSelected($row);
         $this->id->setDbValue($row['id']);
         $this->procurement_id->setDbValue($row['procurement_id']);
-        $this->file_name->setDbValue($row['file_name']);
+        $this->file_name->Upload->DbValue = $row['file_name'];
+        $this->file_name->setDbValue($this->file_name->Upload->DbValue);
         $this->file_path->setDbValue($row['file_path']);
         $this->uploaded_at->setDbValue($row['uploaded_at']);
     }
@@ -2035,7 +2036,11 @@ class DocumentsList extends Documents
             }
 
             // file_name
-            $this->file_name->ViewValue = $this->file_name->CurrentValue;
+            if (!IsEmpty($this->file_name->Upload->DbValue)) {
+                $this->file_name->ViewValue = $this->file_name->Upload->DbValue;
+            } else {
+                $this->file_name->ViewValue = "";
+            }
 
             // file_path
             $this->file_path->ViewValue = $this->file_path->CurrentValue;
@@ -2054,6 +2059,7 @@ class DocumentsList extends Documents
 
             // file_name
             $this->file_name->HrefValue = "";
+            $this->file_name->ExportHrefValue = $this->file_name->UploadPath . $this->file_name->Upload->DbValue;
             $this->file_name->TooltipValue = "";
 
             // file_path

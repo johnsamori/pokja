@@ -139,8 +139,9 @@ class ItemsDelete extends Items
         $this->quantity->setVisibility();
         $this->unit->setVisibility();
         $this->price->setVisibility();
-        $this->created_at->setVisibility();
-        $this->updated_at->setVisibility();
+        $this->_userid->Visible = false;
+        $this->_username->Visible = false;
+        $this->ip->Visible = false;
     }
 
     // Constructor
@@ -593,8 +594,9 @@ class ItemsDelete extends Items
         $this->quantity->setDbValue($row['quantity']);
         $this->unit->setDbValue($row['unit']);
         $this->price->setDbValue($row['price']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
+        $this->_userid->setDbValue($row['userid']);
+        $this->_username->setDbValue($row['username']);
+        $this->ip->setDbValue($row['ip']);
     }
 
     // Return a row with default values
@@ -607,8 +609,9 @@ class ItemsDelete extends Items
         $row['quantity'] = $this->quantity->DefaultValue;
         $row['unit'] = $this->unit->DefaultValue;
         $row['price'] = $this->price->DefaultValue;
-        $row['created_at'] = $this->created_at->DefaultValue;
-        $row['updated_at'] = $this->updated_at->DefaultValue;
+        $row['userid'] = $this->_userid->DefaultValue;
+        $row['username'] = $this->_username->DefaultValue;
+        $row['ip'] = $this->ip->DefaultValue;
         return $row;
     }
 
@@ -636,9 +639,11 @@ class ItemsDelete extends Items
 
         // price
 
-        // created_at
+        // userid
 
-        // updated_at
+        // username
+
+        // ip
 
         // View row
         if ($this->RowType == RowType::VIEW) {
@@ -662,13 +667,15 @@ class ItemsDelete extends Items
             $this->price->ViewValue = $this->price->CurrentValue;
             $this->price->ViewValue = FormatNumber($this->price->ViewValue, $this->price->formatPattern());
 
-            // created_at
-            $this->created_at->ViewValue = $this->created_at->CurrentValue;
-            $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
+            // userid
+            $this->_userid->ViewValue = $this->_userid->CurrentValue;
+            $this->_userid->ViewValue = FormatNumber($this->_userid->ViewValue, $this->_userid->formatPattern());
 
-            // updated_at
-            $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-            $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
+            // username
+            $this->_username->ViewValue = $this->_username->CurrentValue;
+
+            // ip
+            $this->ip->ViewValue = $this->ip->CurrentValue;
 
             // id
             $this->id->HrefValue = "";
@@ -693,14 +700,6 @@ class ItemsDelete extends Items
             // price
             $this->price->HrefValue = "";
             $this->price->TooltipValue = "";
-
-            // created_at
-            $this->created_at->HrefValue = "";
-            $this->created_at->TooltipValue = "";
-
-            // updated_at
-            $this->updated_at->HrefValue = "";
-            $this->updated_at->TooltipValue = "";
         }
 
         // Call Row Rendered event

@@ -53,8 +53,9 @@ loadjs.ready(["wrapper", "head"], function () {
             ["quantity", [fields.quantity.visible && fields.quantity.required ? ew.Validators.required(fields.quantity.caption) : null, ew.Validators.integer], fields.quantity.isInvalid],
             ["unit", [fields.unit.visible && fields.unit.required ? ew.Validators.required(fields.unit.caption) : null], fields.unit.isInvalid],
             ["price", [fields.price.visible && fields.price.required ? ew.Validators.required(fields.price.caption) : null, ew.Validators.float], fields.price.isInvalid],
-            ["created_at", [fields.created_at.visible && fields.created_at.required ? ew.Validators.required(fields.created_at.caption) : null, ew.Validators.datetime(fields.created_at.clientFormatPattern)], fields.created_at.isInvalid],
-            ["updated_at", [fields.updated_at.visible && fields.updated_at.required ? ew.Validators.required(fields.updated_at.caption) : null, ew.Validators.datetime(fields.updated_at.clientFormatPattern)], fields.updated_at.isInvalid]
+            ["_userid", [fields._userid.visible && fields._userid.required ? ew.Validators.required(fields._userid.caption) : null], fields._userid.isInvalid],
+            ["_username", [fields._username.visible && fields._username.required ? ew.Validators.required(fields._username.caption) : null], fields._username.isInvalid],
+            ["ip", [fields.ip.visible && fields.ip.required ? ew.Validators.required(fields.ip.caption) : null], fields.ip.isInvalid]
         ])
 
         // Form_CustomValidate
@@ -188,116 +189,6 @@ loadjs.ready(['fitemsedit', 'jqueryinputmask'], function() {
 		'removeMaskOnSubmit': true
 	};
 	ew.createjQueryInputMask("fitemsedit", "x_price", jQuery.extend(true, "", options));
-});
-</script>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->created_at->Visible) { // created_at ?>
-    <div id="r_created_at"<?= $Page->created_at->rowAttributes() ?>>
-        <label id="elh_items_created_at" for="x_created_at" class="<?= $Page->LeftColumnClass ?>"><?= $Page->created_at->caption() ?><?= $Page->created_at->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->created_at->cellAttributes() ?>>
-<span id="el_items_created_at">
-<input type="<?= $Page->created_at->getInputTextType() ?>" name="x_created_at" id="x_created_at" data-table="items" data-field="x_created_at" value="<?= $Page->created_at->EditValue ?>" placeholder="<?= HtmlEncode($Page->created_at->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->created_at->formatPattern()) ?>"<?= $Page->created_at->editAttributes() ?> aria-describedby="x_created_at_help">
-<?= $Page->created_at->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->created_at->getErrorMessage() ?></div>
-<?php if (!$Page->created_at->ReadOnly && !$Page->created_at->Disabled && !isset($Page->created_at->EditAttrs["readonly"]) && !isset($Page->created_at->EditAttrs["disabled"])) { ?>
-<script<?= Nonce() ?>>
-loadjs.ready(["fitemsedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
-        options = {
-            localization: {
-                locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
-                hourCycle: format.match(/H/) ? "h24" : "h12",
-                format,
-                ...ew.language.phrase("datetimepicker")
-            },
-            display: {
-                icons: {
-                    previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
-                    next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
-                },
-                components: {
-                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
-                    hours: !!format.match(/h/i),
-                    minutes: !!format.match(/m/),
-                    seconds: !!format.match(/s/i)
-                },
-                theme: ew.getPreferredTheme()
-            }
-        };
-    ew.createDateTimePicker(
-        "fitemsedit",
-        "x_created_at",
-        ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options),
-        {"inputGroup":true}
-    );
-});
-</script>
-<?php } ?>
-<script<?= Nonce() ?>>
-loadjs.ready(['fitemsedit', 'jqueryinputmask'], function() {
-	options = {
-		'jitMasking': false,
-		'removeMaskOnSubmit': true
-	};
-	ew.createjQueryInputMask("fitemsedit", "x_created_at", jQuery.extend(true, "", options));
-});
-</script>
-</span>
-</div></div>
-    </div>
-<?php } ?>
-<?php if ($Page->updated_at->Visible) { // updated_at ?>
-    <div id="r_updated_at"<?= $Page->updated_at->rowAttributes() ?>>
-        <label id="elh_items_updated_at" for="x_updated_at" class="<?= $Page->LeftColumnClass ?>"><?= $Page->updated_at->caption() ?><?= $Page->updated_at->Required ? $Language->phrase("FieldRequiredIndicator") : "" ?></label>
-        <div class="<?= $Page->RightColumnClass ?>"><div<?= $Page->updated_at->cellAttributes() ?>>
-<span id="el_items_updated_at">
-<input type="<?= $Page->updated_at->getInputTextType() ?>" name="x_updated_at" id="x_updated_at" data-table="items" data-field="x_updated_at" value="<?= $Page->updated_at->EditValue ?>" placeholder="<?= HtmlEncode($Page->updated_at->getPlaceHolder()) ?>" data-format-pattern="<?= HtmlEncode($Page->updated_at->formatPattern()) ?>"<?= $Page->updated_at->editAttributes() ?> aria-describedby="x_updated_at_help">
-<?= $Page->updated_at->getCustomMessage() ?>
-<div class="invalid-feedback"><?= $Page->updated_at->getErrorMessage() ?></div>
-<?php if (!$Page->updated_at->ReadOnly && !$Page->updated_at->Disabled && !isset($Page->updated_at->EditAttrs["readonly"]) && !isset($Page->updated_at->EditAttrs["disabled"])) { ?>
-<script<?= Nonce() ?>>
-loadjs.ready(["fitemsedit", "datetimepicker"], function () {
-    let format = "<?= DateFormat(0) ?>",
-        options = {
-            localization: {
-                locale: ew.LANGUAGE_ID + "-u-nu-" + ew.getNumberingSystem(),
-                hourCycle: format.match(/H/) ? "h24" : "h12",
-                format,
-                ...ew.language.phrase("datetimepicker")
-            },
-            display: {
-                icons: {
-                    previous: ew.IS_RTL ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left",
-                    next: ew.IS_RTL ? "fa-solid fa-chevron-left" : "fa-solid fa-chevron-right"
-                },
-                components: {
-                    clock: !!format.match(/h/i) || !!format.match(/m/) || !!format.match(/s/i),
-                    hours: !!format.match(/h/i),
-                    minutes: !!format.match(/m/),
-                    seconds: !!format.match(/s/i)
-                },
-                theme: ew.getPreferredTheme()
-            }
-        };
-    ew.createDateTimePicker(
-        "fitemsedit",
-        "x_updated_at",
-        ew.deepAssign({"useCurrent":false,"display":{"sideBySide":false}}, options),
-        {"inputGroup":true}
-    );
-});
-</script>
-<?php } ?>
-<script<?= Nonce() ?>>
-loadjs.ready(['fitemsedit', 'jqueryinputmask'], function() {
-	options = {
-		'jitMasking': false,
-		'removeMaskOnSubmit': true
-	};
-	ew.createjQueryInputMask("fitemsedit", "x_updated_at", jQuery.extend(true, "", options));
 });
 </script>
 </span>

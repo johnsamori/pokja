@@ -52,11 +52,14 @@ class Item extends AbstractEntity
     #[Column(name: "price", type: "decimal", nullable: true)]
     private ?string $Price;
 
-    #[Column(name: "created_at", type: "datetime")]
-    private DateTime $CreatedAt;
+    #[Column(name: "userid", type: "integer", nullable: true)]
+    private ?int $Userid;
 
-    #[Column(name: "updated_at", type: "datetime")]
-    private DateTime $UpdatedAt;
+    #[Column(name: "username", type: "string", nullable: true)]
+    private ?string $Username;
+
+    #[Column(name: "ip", type: "string", nullable: true)]
+    private ?string $Ip;
 
     public function getId(): int
     {
@@ -124,25 +127,36 @@ class Item extends AbstractEntity
         return $this;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getUserid(): ?int
     {
-        return $this->CreatedAt;
+        return $this->Userid;
     }
 
-    public function setCreatedAt(DateTime $value): static
+    public function setUserid(?int $value): static
     {
-        $this->CreatedAt = $value;
+        $this->Userid = $value;
         return $this;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUsername(): ?string
     {
-        return $this->UpdatedAt;
+        return HtmlDecode($this->Username);
     }
 
-    public function setUpdatedAt(DateTime $value): static
+    public function setUsername(?string $value): static
     {
-        $this->UpdatedAt = $value;
+        $this->Username = RemoveXss($value);
+        return $this;
+    }
+
+    public function getIp(): ?string
+    {
+        return HtmlDecode($this->Ip);
+    }
+
+    public function setIp(?string $value): static
+    {
+        $this->Ip = RemoveXss($value);
         return $this;
     }
 }

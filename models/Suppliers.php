@@ -68,8 +68,6 @@ class Suppliers extends DbTable
     public DbField $address;
     public DbField $phone;
     public DbField $_email;
-    public DbField $created_at;
-    public DbField $updated_at;
 
     // Page ID
     public string $PageID = ""; // To be set by subclass
@@ -226,58 +224,6 @@ class Suppliers extends DbTable
         $this->_email->InputTextType = "text";
         $this->_email->SearchOperators = ["=", "<>", "IN", "NOT IN", "STARTS WITH", "NOT STARTS WITH", "LIKE", "NOT LIKE", "ENDS WITH", "NOT ENDS WITH", "IS EMPTY", "IS NOT EMPTY", "IS NULL", "IS NOT NULL"];
         $this->Fields['email'] = &$this->_email;
-
-        // created_at
-        $this->created_at = new DbField(
-            $this, // Table
-            'x_created_at', // Variable name
-            'created_at', // Name
-            '`created_at`', // Expression
-            CastDateFieldForLike("`created_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
-            false, // Is upload field
-            '`created_at`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->created_at->InputTextType = "text";
-        $this->created_at->Raw = true;
-        $this->created_at->Nullable = false; // NOT NULL field
-        $this->created_at->Required = true; // Required field
-        $this->created_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->created_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['created_at'] = &$this->created_at;
-
-        // updated_at
-        $this->updated_at = new DbField(
-            $this, // Table
-            'x_updated_at', // Variable name
-            'updated_at', // Name
-            '`updated_at`', // Expression
-            CastDateFieldForLike("`updated_at`", 0, "DB"), // Basic search expression
-            135, // Type
-            19, // Size
-            0, // Date/Time format
-            false, // Is upload field
-            '`updated_at`', // Virtual expression
-            false, // Is virtual
-            false, // Force selection
-            false, // Is Virtual search
-            'FORMATTED TEXT', // View Tag
-            'TEXT' // Edit Tag
-        );
-        $this->updated_at->InputTextType = "text";
-        $this->updated_at->Raw = true;
-        $this->updated_at->Nullable = false; // NOT NULL field
-        $this->updated_at->Required = true; // Required field
-        $this->updated_at->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $this->language->phrase("IncorrectDate"));
-        $this->updated_at->SearchOperators = ["=", "<>", "IN", "NOT IN", "<", "<=", ">", ">=", "BETWEEN", "NOT BETWEEN"];
-        $this->Fields['updated_at'] = &$this->updated_at;
 
         // Cache profile
         $this->cacheProfile = new QueryCacheProfile(0, $this->TableVar);
@@ -808,8 +754,6 @@ class Suppliers extends DbTable
         $this->address->DbValue = $row['address'];
         $this->phone->DbValue = $row['phone'];
         $this->_email->DbValue = $row['email'];
-        $this->created_at->DbValue = $row['created_at'];
-        $this->updated_at->DbValue = $row['updated_at'];
     }
 
     // Delete uploaded files
@@ -1170,8 +1114,6 @@ class Suppliers extends DbTable
         $this->address->setDbValue($row['address']);
         $this->phone->setDbValue($row['phone']);
         $this->_email->setDbValue($row['email']);
-        $this->created_at->setDbValue($row['created_at']);
-        $this->updated_at->setDbValue($row['updated_at']);
     }
 
     // Render list content
@@ -1213,10 +1155,6 @@ class Suppliers extends DbTable
 
         // email
 
-        // created_at
-
-        // updated_at
-
         // id
         $this->id->ViewValue = $this->id->CurrentValue;
 
@@ -1231,14 +1169,6 @@ class Suppliers extends DbTable
 
         // email
         $this->_email->ViewValue = $this->_email->CurrentValue;
-
-        // created_at
-        $this->created_at->ViewValue = $this->created_at->CurrentValue;
-        $this->created_at->ViewValue = FormatDateTime($this->created_at->ViewValue, $this->created_at->formatPattern());
-
-        // updated_at
-        $this->updated_at->ViewValue = $this->updated_at->CurrentValue;
-        $this->updated_at->ViewValue = FormatDateTime($this->updated_at->ViewValue, $this->updated_at->formatPattern());
 
         // id
         $this->id->HrefValue = "";
@@ -1259,14 +1189,6 @@ class Suppliers extends DbTable
         // email
         $this->_email->HrefValue = "";
         $this->_email->TooltipValue = "";
-
-        // created_at
-        $this->created_at->HrefValue = "";
-        $this->created_at->TooltipValue = "";
-
-        // updated_at
-        $this->updated_at->HrefValue = "";
-        $this->updated_at->TooltipValue = "";
 
         // Call Row Rendered event
         $this->rowRendered();
@@ -1319,16 +1241,6 @@ class Suppliers extends DbTable
         $this->_email->EditValue = $this->_email->CurrentValue;
         $this->_email->PlaceHolder = RemoveHtml($this->_email->caption());
 
-        // created_at
-        $this->created_at->setupEditAttributes();
-        $this->created_at->EditValue = FormatDateTime($this->created_at->CurrentValue, $this->created_at->formatPattern());
-        $this->created_at->PlaceHolder = RemoveHtml($this->created_at->caption());
-
-        // updated_at
-        $this->updated_at->setupEditAttributes();
-        $this->updated_at->EditValue = FormatDateTime($this->updated_at->CurrentValue, $this->updated_at->formatPattern());
-        $this->updated_at->PlaceHolder = RemoveHtml($this->updated_at->caption());
-
         // Call Row Rendered event
         $this->rowRendered();
     }
@@ -1363,16 +1275,12 @@ class Suppliers extends DbTable
                     $doc->exportCaption($this->address);
                     $doc->exportCaption($this->phone);
                     $doc->exportCaption($this->_email);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
                 } else {
                     $doc->exportCaption($this->id);
                     $doc->exportCaption($this->name);
                     $doc->exportCaption($this->address);
                     $doc->exportCaption($this->phone);
                     $doc->exportCaption($this->_email);
-                    $doc->exportCaption($this->created_at);
-                    $doc->exportCaption($this->updated_at);
                 }
                 $doc->endExportRow();
             }
@@ -1405,8 +1313,6 @@ class Suppliers extends DbTable
 						$doc->exportCaption($this->address);
 						$doc->exportCaption($this->phone);
 						$doc->exportCaption($this->_email);
-						$doc->exportCaption($this->created_at);
-						$doc->exportCaption($this->updated_at);
 						$doc->endExportRow(); // End of modification by Masino Sinaga, table header will be repeated at the top of each page after page break, September 11, 2023
                     }
                 }
@@ -1425,16 +1331,12 @@ class Suppliers extends DbTable
                         $doc->exportField($this->address);
                         $doc->exportField($this->phone);
                         $doc->exportField($this->_email);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
                     } else {
                         $doc->exportField($this->id);
                         $doc->exportField($this->name);
                         $doc->exportField($this->address);
                         $doc->exportField($this->phone);
                         $doc->exportField($this->_email);
-                        $doc->exportField($this->created_at);
-                        $doc->exportField($this->updated_at);
                     }
                     $doc->endExportRow($rowCnt);
                 }
